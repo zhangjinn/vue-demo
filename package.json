@@ -9,6 +9,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "better-scroll": "^0.1.15",
+    "cube-ui": "~1.12.1",
     "vant": "^1.4.8",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
@@ -29,8 +31,18 @@
     "eslint-plugin-vue": "^5.0.0-0",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
+    "postcss-px2rem": "^0.3.0",
     "postcss-pxtorem": "^4.0.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
     "swiper": "^4.4.6",
+    "vue-cli-plugin-cube-ui": "^0.2.4",
     "vue-template-compiler": "^2.5.17"
+  },
+  "transformModules": {
+    "cube-ui": {
+      "transform": "cube-ui/src/modules/${member}",
+      "kebabCase": true
+    }
   }
 }

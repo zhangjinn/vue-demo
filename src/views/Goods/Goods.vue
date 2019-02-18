@@ -92,6 +92,7 @@ export default {
 
     }
   },
+
   components: {
     headTop,
     footGuide,
@@ -101,21 +102,16 @@ export default {
 
   },
   mounted (){
-    console.log(this.$route)
-    this.getData();
+    this.infoRequest();
   },
   methods: {
-
-    getData(){
-      this.$ajax({
-        method: 'get',
-//        url: 'foo/122056/example/1545374258255'
-        url: '/api/goods'
-      })
-       .then(function(response){
-        console.log(response.data);
-
-         let resArr = [...response.data.info];
+    async infoRequest(){
+      this.foodTypes = await this.$http.get('/api/goods');
+      console.log(this.foodTypes);
+      this.executeTask();
+    },
+    executeTask(){
+         let resArr = [...this.foodTypes.info];
          var foodArr=[];
          for(let i= 0,j=0;i<=resArr.length;i+=8,j++){
            foodArr[j]=resArr.splice(0,8)
@@ -124,21 +120,14 @@ export default {
          this.$nextTick(function() {
            this.swiperLoad();
          });
-          console.log(this.foodTypes);
-
-       }.bind(this))//这两个回调函数都有各自独立的作用域，如果直接在里面访问 this，无法访问到 Vue 实例，只要添加一个 .bind(this) 就能解决这个问题
-       .catch(function(error){
-         console.log(error)
-      })
-
 
     },
     onRefresh() {
       setTimeout(() => {
         this.$toast('刷新成功');
-      this.isLoading = false;
-      this.count++;
-    }, 500);
+        this.isLoading = false;
+        this.count++;
+      }, 500);
     },
 
     swiperLoad(){

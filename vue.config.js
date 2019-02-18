@@ -7,9 +7,10 @@
 
 const goods=require('./mock/goodslist.json');
 const foodMenu=require('./mock/foodMenu.json');
+const rateMenu=require('./mock/rateMenu.json');
 module.exports = {
-     //baseUrl  type:{string} default:'/'
-     //baseUrl:'./',
+    //baseUrl  type:{string} default:'/'
+    //baseUrl:'./',
     // 将部署应用程序的基本URL
     // 将部署应用程序的基本URL。
     // 默认情况下，Vue CLI假设您的应用程序将部署在域的根目录下。
@@ -53,16 +54,23 @@ module.exports = {
     // 它支持webPack-dev-server的所有选项
     css: {
         loaderOptions: {
-            less: {
-                modifyVars: {
-                    red: '#03a9f4',
-                    blue: '#3eaf7c',
-                    orange: '#f08d49',
-                    'text-color': '#111'
-                }
+          less: {
+            modifyVars: {
+              red: '#03a9f4',
+              blue: '#3eaf7c',
+              orange: '#f08d49',
+              'text-color': '#111'
             }
+          },
+          stylus: {
+            'resolve url': true,
+            'import': [
+              './src/theme'
+            ]
+          }
         }
     },
+
     devServer: {
         port: 8088, // 端口号
         //host: "0.0.0.0",
@@ -114,6 +122,19 @@ module.exports = {
                     info: foodMenu
                 })
             });
+            app.get('/api/rateMenu', (req, res) => {
+                res.json({
+                    errno: 0,
+                    info: rateMenu
+                })
+            });
         }
+    },
+
+    pluginOptions: {
+      'cube-ui': {
+        postCompile: true,
+        theme: true
+      }
     }
 };

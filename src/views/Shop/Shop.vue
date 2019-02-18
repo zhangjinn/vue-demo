@@ -1,106 +1,255 @@
 <template>
-   <section class="shop_container">
-       <nav class="goback">
-           <
-       </nav>
-        <header class="shop_detail_header">
-            <div class="shop_detail_header_txt">
-                shop header
-            </div>
-        </header>
-       <section class="change_show_type" ref="chooseType">
-           <div>
-               <span :class='{activity_show: changeShowType =="food"}' @click="changeShowType='food'">商品</span>
-           </div>
-           <div>
-               <span :class='{activity_show: changeShowType =="rating"}' @click="changeShowType='rating'">评价</span>
-           </div>
-       </section>
-       <transition name="fade-choose">
-            <section v-show="changeShowType =='food'" class="food_container">
-                <section class="menu_container">
-                    <section class="menu_left" id="wrapper_menu" ref="wrapperMenu">
-                        <ul>
-                            <li v-for="(item,index) in menuList" :key="index" class="menu_left_li" :class="{activity_menu: index == menuIndex}" @click="chooseMenu(index)">
-                                <!--<img :src="getImgPath(item.icon_url)" v-if="item.icon_url">-->
-                                <span>{{item.name}}</span>
+    <div>
+        <section v-if="!showLoading" class="shop_container">
+            <nav class="goback">
+                <
+            </nav>
+            <header class="shop_detail_header">
+                <div class="shop_detail_header_txt">
+                    shop header
+                </div>
+            </header>
+            <section class="change_show_type" ref="chooseType">
+                <div>
+                    <span :class='{activity_show: changeShowType =="food"}' @click="changeShowType='food'">商品</span>
+                </div>
+                <div>
+                    <span :class='{activity_show: changeShowType =="rating"}' @click="changeShowType='rating'">评价</span>
+                </div>
+            </section>
+            <cube-button @click="showDialog">show dialog</cube-button>
+            <transition name="fade-choose">
+                <section v-show="changeShowType =='food'" class="food_container">
+                    <section class="menu_container">
+                        <section class="menu_left" id="wrapper_menu" ref="wrapperMenu">
+                            <ul>
+                                <li v-for="(item,index) in menuList" :key="index" class="menu_left_li" :class="{activity_menu: index == menuIndex}" @click="chooseMenu(index)">
+                                    <span>{{item.name}}</span>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="menu_right" ref="menuFoodList">
+                            <ul>
+                                <li v-for="(item,index) in menuList" :key="index">
+                                    <header>
+                                        <section class="menu_detail_header_left">
+                                            <strong class="menu_item_title">{{item.name}}</strong>
+                                            <span class="menu_item_description">{{item.description}}</span>
+                                        </section>
+                                    </header>
+                                    <section v-for="(foods,foodindex) in item.foods" :key="foodindex" class="menu_detail_list">
+                                        <section>
+                                            <h3 class="food_description_head">
+                                                <strong class="description_foodname">{{foods.name}}</strong>
+
+                                            </h3>
+                                        </section>
+                                    </section>
+                                </li>
+                            </ul>
+                        </section>
+                    </section>
+                </section>
+            </transition>
+            <transition name="fade-choose">
+                <section v-show="changeShowType =='rating'"  class="rating_container" >
+                    <section id="ratingContainer" ref="ratingList">
+                        <ul class="rating_list_ul">
+                            <li v-for="(item,index) in ratingList" :key="index">
+                                <section>
+                                    <p>{{item.username}}</p>
+                                </section>
                             </li>
                         </ul>
                     </section>
-                    <section class="menu_right" ref="menuFoodList">
-
-                    </section>
                 </section>
-            </section>
-       </transition>
-       <transition name="fade-choose">
-           <section v-show="changeShowType =='rating'"  class="rating_container" id="ratingContainer">
-                vvv
-           </section>
-       </transition>
-       <!--<section class="food_container">-->
-           <!--<van-tabs @click="onClick">-->
-               <!--<van-tab title="标签 1">-->
-                   <!--<section class="menu_container">-->
-                       <!--<section class="menu_left">-->
-                           <!--<van-badge-group :active-key="activeKey" @change="onChange" >-->
-                               <!--<van-badge :title="item.name" v-for="(item,index) in menuList" :key="index" class="menu_left_btn"/>-->
+            </transition>
 
-                           <!--</van-badge-group>-->
-                       <!--</section>-->
-                       <!--<section class="menu_right">-->
+        </section>
 
-                       <!--</section>-->
-                   <!--</section>-->
-               <!--</van-tab>-->
-               <!--<van-tab title="标签 2">内容 2</van-tab>-->
-           <!--</van-tabs>-->
-       <!--</section>-->
-   </section>
+        <loading v-show="showLoading || loadRatings"></loading>
+    </div>
+
 </template>
 <script>
+    import loading from '@/components/common/loading.vue'
+    import BScroll from 'better-scroll'
+
     export default{
         data(){
             return{
                 activeKey: 0,
+                showLoading:true, //显示加载动画
                 changeShowType: 'food',//切换显示商品或者评价
                 menuList: [], //食品列表
-                menuIndex: 0 //已选菜单索引值，默认为0
+                menuIndex: 0, //已选菜单索引值，默认为0
+                menuIndexChange: true,//解决选中index时，scroll监听事件重复判断设置index的bug
+                shopListTop: [], //商品列表的高度集合
+                foodScroll: null,  //食品列表scroll
+                ratingList:null, //评价列表
+                ratingOffset: 0, //评价获取数据offset值
+                loadRatings: false, //加载更多评论是显示加载组件
+                preventRepeatRequest: false// 防止多次触发数据请求
             }
         },
+        created(){
+
+        },
         mounted(){
-            console.log(this.$route)
-            this.getFoodMenuData();
+            this.initData();
+        },
+        components:{
+          loading
+        },
+        watch:{
+            //showLoading变化时说明组件已经获取初始化数据，在下一帧nextTick进行后续操作
+            showLoading:function(value){
+                if(!value){
+                    this.$nextTick(()=>{
+
+                        this.executeWork();
+                    })
+                }
+            },
+            //切换到评论状态
+            changeShowType:function(value){
+                if(value==="rating"){
+                    this.$nextTick(()=>{
+                        this.ratingScroll=new BScroll(this.$refs.ratingList,{
+                            probeType: 3,
+                            deceleration: 0.003,
+                            bounce: false,
+                            swipeTime: 2000,
+                            click: true
+                        });
+                        this.ratingScroll.on('scroll',(pos)=>{
+                            if (Math.abs(Math.round(pos.y)) >=  Math.abs(Math.round(this.ratingScroll.maxScrollY))){
+                                this.loaderMoreRating();
+                                this.ratingScroll.refresh();
+                            }
+                        })
+
+                    })
+                }
+            }
+
         },
         methods: {
+
+            //初始化时获取基本数据
+            async initData(){
+                //商品列表
+                this.menuList=await this.$http.get('/api/foodMenu');
+                //评论了列表
+                this.ratingList=await this.$http.get('api/rateMenu');
+
+                this.menuList = [...this.menuList.info];
+                this.ratingList = [...this.ratingList.info];
+                this.hideLoading();
+            },
+            //加载更多评论
+            async loaderMoreRating(){
+                if (this.preventRepeatRequest) {
+                    return
+                }
+                this.loadRatings = true;
+                this.preventRepeatRequest = true;
+                this.ratingOffset += 10;
+                let ratingDate=await this.$http.get('api/rateMenu');
+                    ratingDate= [...ratingDate.info];
+                this.ratingList = [...this.ratingList,...ratingDate]; //展开运算符结合数组
+                this.loadRatings = false;
+                this.preventRepeatRequest = false;
+
+            },
+            showDialog() {
+                    this.$createDialog({
+                        type: 'alert',
+                        title: 'Alert',
+                        content: 'dialog content'
+                    }).show()
+            },
             onClick(index, title) {
                 this.$toast(title);
             },
             onChange(key) {
                 this.activeKey = key;
             },
+            //隐藏动画
+            hideLoading(){
+                this.showLoading = false;
+            },
             //点击左侧食品列表标题，相应列表移动到最顶层
             chooseMenu(index){
-                console.log(index)
                 this.menuIndex = index;
+                //menuIndexChange解决运动时listenScroll依然监听的bug
+                this.menuIndexChange = false;
+                this.foodScroll.scrollTo(0,-this.shopListTop[index],400); //选择左侧监听右侧
+                this.foodScroll.on('scrollEnd',()=>{
+                    this.menuIndexChange = true;
+                })
+
 
             },
-            getFoodMenuData(){
-                this.$ajax({
-                            method:'get',
-                            url:'/api/foodMenu'
-                        })
-                        .then(function(response){
-                            console.log(response.data);
-                            let resArr = [...response.data.info];
-                            this.menuList = resArr;
+            //获取数据后执行
+            executeWork(){
+                this.$nextTick(() => {
+                    this.getFoodListHeight();
 
-                            console.log( this.menuList);
-                        }.bind(this)).catch(function(error){
-                    console.log(error)
+                    console.log(this.menuList)
+                })
+            },
+
+            //获取食品列表的高度，存入shopListTop
+            getFoodListHeight(){
+                const listContainer=this.$refs.menuFoodList;
+                if(listContainer){
+                    const listArr = Array.from(listContainer.children[0].children);//ES6 Array.from()方法就是将一个类数组对象或者可遍历对象转换成一个真正的数组。
+                    listArr.forEach((item, index)=>{
+                        this.shopListTop[index]=item.offsetTop;
+                    })
+
+                    this.listenScroll(listContainer)
+                }
+
+
+            },
+
+            //当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
+            listenScroll(element){
+                //左侧滚动初始化
+                if(!this.scroll){
+                    this.scroll = new BScroll(this.$refs.wrapperMenu, {
+                        click: true
+                    });
+                }else{
+                    this.scroll.refresh()
+                }
+                //右侧滚动初始化
+                this.foodScroll=new BScroll(element,{
+                    probeType: 3,
+                    deceleration: 0.001,
+                    bounce: false,
+                    swipeTime: 2000,
+                    click: true
+                });
+                const wrapMenuHeight=this.$refs.wrapperMenu.clientHeight;
+                this.foodScroll.on('scroll',(pos)=>{//滚动右侧监听左侧
+                    if(!this.$refs.wrapperMenu){
+                            return
+                    }
+
+                    this.shopListTop.forEach((item,index)=>{
+                        if(this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item){
+                            this.menuIndex = index;
+                            const menuList=this.$refs.wrapperMenu.querySelectorAll('.activity_menu');
+                            const el = menuList[0];
+                            this.scroll.scrollToElement(el, 800, 0, -(wrapMenuHeight/2 - 50));
+
+                        }
+                    })
                 })
             }
-
 
         }
     }
@@ -156,23 +305,56 @@
             }
         }
     }
-    .food_container{
+    .food_container,.rating_container{
         display: flex;
-        /*-ms-flex: 1;*/
-        /*flex: 1;*/
+        flex: 1;
+        padding-bottom:50px
     }
     .menu_container{
-
         display: flex;
+        flex: 1;
         overflow-y: hidden;
         position: relative;
         .menu_left{
             width:100px;
+            .menu_left_li{
+                padding: 15px 10px;
+                border-bottom: 1px solid #ededed;
+                box-sizing: border-box;
+                border-left: 4px solid #f8f8f8;
+                position: relative;
+            }
+            .activity_menu{
+                border-left: 4px solid #3190e8;
+                background-color: #fff;
+                span:nth-of-type(1){
+                    font-weight: bold;
+                }
+            }
         }
         .menu_right{
             flex: 4;
-            background: #7ce4ff;
             overflow-y: auto;
+            li{
+               margin-bottom: 50px;
+                section{
+                    padding:5px 0;
+                }
+            }
         }
     }
+    .rating_container{
+        overflow-y: hidden;
+        #ratingContainer{
+            flex: 1;
+        }
+        .rating_list_ul{
+            width:100%;
+            li{
+                padding:0 0 55px 0;
+            }
+
+        }
+    }
+
 </style>
