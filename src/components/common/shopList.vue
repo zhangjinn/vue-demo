@@ -42,13 +42,13 @@
                 <section class="activities_listWrap">
                     <div class="activityList">
 
-                        <div class="actRow" v-for="(item,i) in item.activities" :key="i" v-show="i<2 &&shopListIndex == index">
+                        <div class="actRow" v-for="(item,i) in item.activities" :key="i" v-show="i<2">
                             <span class="actRow_iconWrap">{{item.icon_name}}</span>
                             <span class="actRow_desc ellipsis">{{item.description}}</span>
                         </div>
                     </div>
-                    <div class="activityBtn" @click="activitiesShow(index)">
-                        <span>5个活动<i class="icon iconfont icon-xialajiantou"></i></span>
+                    <div class="activityBtn" @click="activitiesShow(index)" v-if="item.activities.length>2">
+                        <span>{{item.activities.length}}个活动<i class="icon iconfont icon-xialajiantou"></i></span>
                     </div>
                 </section>
             </div>
@@ -293,10 +293,7 @@
                              margin-right: 4px;
                              .border-radius(2px);
                          }
-                         .actRow_desc{
-                             flex: 1;
-                             vertical-align: middle;
-                         }
+
                      }
                     .actRow:not(:first-child){
                         margin-top: 6px;
