@@ -1,18 +1,21 @@
 <template>
-    <header class="header">
         <van-nav-bar
                 :title="headTitle"
                 fixed
                 @click-left="onClickLeft"
-                @click-right="onClickRight">
+                @click-right="onClickRight"
+                :z-index=zIndex >
             <slot name="lt-logo"  slot="left"></slot>
             <slot name="rg-logo"  slot="right"></slot>
         </van-nav-bar>
-    </header>
-
 </template>
 <script>
     export default{
+        data(){
+          return{
+              zIndex:2
+          }
+        },
         props:['headTitle','goBack'],
         methods: {
             onClickLeft() {
@@ -23,3 +26,6 @@
         }
     }
 </script>
+<style lang="less" scoped>
+
+</style>

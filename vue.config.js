@@ -79,28 +79,16 @@ module.exports = {
         open: true, //配置自动启动浏览器
         // proxy: 'http://localhost:4000' // 配置跨域处理,只有一个代理
         proxy: { // 配置多个代理
-            //'/api': {
-            //    target: '<url>',
-            //    ws: true,
-            //    changeOrigin: true
-            //},
 
-            '/api': {
-                target: 'http://127.0.0.1:8088', // 代理接口 // 需要请求的地址
-                ws: true,
-                changeOrigin: true, ////开启代理
-                pathRewrite: {  //使用/api 来代替http://127.0.0.1:8088/mock
-                    '^/api': '/mock' //代理路径
-                }
-            },
             '/foo': {
-                target: 'http://rap2api.taobao.org',
+                target: 'http://rap2api.taobao.org', // 代理接口 // 需要请求的地址
                 ws: true,
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/foo': '/app/mock'
+                changeOrigin: true, //开启代理
+                pathRewrite: {  //使用/foo 来代替http://rap2api.taobao.org/app/mock
+                    '^/foo': '/app/mock/122056' //代理路径
                 }
             },
+
             '/shop': {
                 target: 'http://47.96.154.94',
                 ws: true,
@@ -121,13 +109,13 @@ module.exports = {
                     errno: 0,
                     info: foodMenu
                 })
-            });
+            }),
             app.get('/api/rateMenu', (req, res) => {
                 res.json({
                     errno: 0,
                     info: rateMenu
                 })
-            });
+            })
         }
     },
 

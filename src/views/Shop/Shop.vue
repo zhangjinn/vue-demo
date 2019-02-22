@@ -17,7 +17,7 @@
                     <span :class='{activity_show: changeShowType =="rating"}' @click="changeShowType='rating'">评价</span>
                 </div>
             </section>
-            <cube-button @click="showDialog">show dialog</cube-button>
+            <!--<cube-button @click="showDialog">show dialog</cube-button>-->
             <transition name="fade-choose">
                 <section v-show="changeShowType =='food'" class="food_container">
                     <section class="menu_container">
@@ -54,13 +54,69 @@
             <transition name="fade-choose">
                 <section v-show="changeShowType =='rating'"  class="rating_container" >
                     <section id="ratingContainer" ref="ratingList">
-                        <ul class="rating_list_ul">
-                            <li v-for="(item,index) in ratingList" :key="index">
-                                <section>
-                                    <p>{{item.username}}</p>
+                        <section>
+                            <header class="rating_header">
+                                <section class="rating_header_left">
+                                    <p>4.7</p>
+                                    <p>综合评价</p>
+                                    <p>高于周边商家76.9%</p>
                                 </section>
-                            </li>
-                        </ul>
+                                <section class="rating_header_right">
+                                    <p>
+                                        <span>服务态度</span>
+                                        <section class="rating_container_in">
+                                            <div class="star_container">你好</div>
+                                            <!--<div class="star_overflow">你好</div>-->
+                                        </section>
+                                        <span>4.7</span>
+                                    </p>
+                                    <p>
+                                        <span>服务态度</span>
+                                        <section class="rating_container_in">
+                                            <div class="star_container">你好</div>
+                                            <!--<div class="star_overflow">你好</div>-->
+                                        </section>
+                                        <span>4.7</span>
+                                    </p>
+                                    <p>
+                                        <span>送达时间</span>
+                                        <span>分钟</span>
+                                    </p>
+                                </section>
+                            </header>
+                            <ul class="rating_list_ul">
+                                <li v-for="(item,index) in ratingList" :key="index" class="rating_list_li">
+                                    <img :src="item.touxiang" alt="" class="user_avatar">
+                                    <section class="rating_list_details">
+                                        <header>
+                                            <section class="username_star">
+                                                <p class="username">{{item.username}}</p>
+                                                <div class="star_desc">
+                                                    <div>fivestars</div>
+                                                    <span>{{item.time_spent_desc}}</span>
+                                                </div>
+                                            </section>
+                                            <time class="rated_at">
+                                               {{item.rated_at}}
+                                            </time>
+                                        </header>
+                                        <ul class="food_img_ul">
+                                            <li v-for="(item,index) in item.item_ratings" :key="index">
+                                                <img :src="item.image_hash" alt="">
+                                            </li>
+
+                                        </ul>
+                                        <ul class="food_name_ul">
+                                            <li class="ellipsis" v-for="(item,index) in item.item_ratings" :key="index">
+                                                  {{item.food_name}}
+                                            </li>
+
+                                        </ul>
+                                    </section>
+                                </li>
+                            </ul>
+                        </section>
+
                     </section>
                 </section>
             </transition>
@@ -140,11 +196,12 @@
             async initData(){
                 //商品列表
                 this.menuList=await this.$http.get('/api/foodMenu');
-                //评论了列表
-                this.ratingList=await this.$http.get('api/rateMenu');
+                //评论列表
+                this.ratingList=await this.$http.get('/foo/rateList');
 
                 this.menuList = [...this.menuList.info];
                 this.ratingList = [...this.ratingList.info];
+                console.log(this.ratingList)
                 this.hideLoading();
             },
             //加载更多评论
@@ -155,7 +212,7 @@
                 this.loadRatings = true;
                 this.preventRepeatRequest = true;
                 this.ratingOffset += 10;
-                let ratingDate=await this.$http.get('api/rateMenu');
+                let ratingDate=await this.$http.get('/foo/rateList');
                     ratingDate= [...ratingDate.info];
                 this.ratingList = [...this.ratingList,...ratingDate]; //展开运算符结合数组
                 this.loadRatings = false;
@@ -255,7 +312,7 @@
     }
 </script>
 <style scoped lang="less">
-
+    @import "../../assets/style/mixin";
     .shop_container{
         display: -ms-flexbox;
         display: flex;
@@ -295,7 +352,6 @@
                 flex: 1;
                 text-align: center;
             span{
-            /*@include sc(.65rem, #666);*/
                 padding: .2rem .1rem;
                 border-bottom: 0.12rem solid #fff;
             }
@@ -347,13 +403,109 @@
         overflow-y: hidden;
         #ratingContainer{
             flex: 1;
-        }
-        .rating_list_ul{
-            width:100%;
-            li{
-                padding:0 0 55px 0;
+            .rating_header{
+                display: flex;
+                background-color: #fff;
+                padding: 16px 10px;
+                margin-bottom: 10px;
+                .rating_header_left{
+                    flex: 3;
+                    text-align: center;
+                    p:first-of-type{
+                        font-size: 24px;
+                        color: #f60;
+                    }
+                    p:nth-of-type(2){
+                        font-size: 16px;
+                        color: #666;
+                        margin-bottom: 2px;
+                    }
+                    p:nth-of-type(3){
+                        font-size: 14px;
+                        color: #999;
+                        margin-bottom: 2px;
+                    }
+                }
+                .rating_header_right{
+                    flex: 4;
+                    p{
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        font-size: 16px;
+                        line-height: 16px;
+
+                    }
+
+
+                }
             }
 
+
+            .rating_list_ul{
+                background-color: #fff;
+                padding: 0 10px;
+                .rating_list_li{
+                    border-top: 1px solid #f1f1f1;
+                    display: flex;
+                    padding: 12px;
+                    .user_avatar{
+                        .wh(30px, 30px);
+                        border-radius: 50%;
+                        margin-right: 16px;
+                    }
+                    .rating_list_details{
+                        flex: 1;
+                        header{
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 6px;
+                            font-size: 11px;
+                            .username_star{
+
+                                color: #666;
+                                .username{
+                                    display: flex;
+                                    margin-bottom: 6px;
+                                }
+                                .star_desc{
+                                    display: flex;
+                                    align-items: center;
+                                }
+                            }
+                            .rated_at{
+                                color: #999;
+                            }
+                        }
+                        .food_img_ul{
+                             display: flex;
+                             flex-wrap: wrap;
+                             margin-bottom: 8px;
+                            li{
+                                .wh(60px,60px);
+                                margin:0 8px 6px 0;
+                                img{
+                                    .wh(100%,100%);
+                                }
+                            }
+                         }
+                        .food_name_ul{
+                             display: flex;
+                             flex-wrap: wrap;
+                            li{
+                                font-size: 11px;
+                                color: #999;
+                                width: 44px;
+                                padding: 4px;
+                                border:1px solid #ebebeb;
+                                border-radius: 3px;
+                                margin-right: 6px;
+                                margin-bottom: 8px;
+                            }
+                         }
+                    }
+                }
+            }
         }
     }
 

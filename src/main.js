@@ -9,6 +9,7 @@ import "./config/rem"
 import { Lazyload } from 'vant';
 import './assets/style/swiper.min.css'
 import './assets/style/main.less'
+import './assets/font/iconfont.css'
 import http from './service/http'
 
 

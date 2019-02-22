@@ -38,8 +38,9 @@
         position: fixed;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
         .wh(50px, 50px);
+        transform: translate(-50%, -50%);
+        z-index: 11;
     }
     .load_img{
         .wh(100%, 100%);
@@ -48,14 +49,7 @@
         transform: translateY(0px);
         animation: load .6s infinite ease-in-out;
         position: relative;
-        z-index: 11;
+
     }
-    .load_ellipse{
-        position: absolute;
-       .wh(18px, 18px);
-        top: 12px;
-        left: 2px;
-        z-index: 10;
-        animation: ellipse .6s infinite ease-in-out;
-    }
+
 </style>

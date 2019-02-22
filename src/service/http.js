@@ -3,7 +3,8 @@ import axios from 'axios';
 // 测试地址
 axios.defaults.baseURL = '';
 // 线上地址
-// axios.defaults.baseURL = '';
+// axios.defaults.baseURL = 'http://rap2api.taobao.org';
+
 // request拦截器
 // axios.interceptors.request.use(function (config) {
 //     return config;
