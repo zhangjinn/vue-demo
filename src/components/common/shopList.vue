@@ -1,62 +1,65 @@
 <template>
     <div class="shoplist_container">
-         <section class="shoplist_info" v-for="(item,index) in restaurants" :key="index">
-            <div class="shoplist_info_introduce">
-                <div class="shoplist_logo">
-                    <img :src="item.image_path" alt="" >
-                </div>
-                <div class="shoplist_main">
-                    <section class="shoplist_main_name">
-                        <h3><i class="icon iconfont icon-dingweiweizhi"></i><span class="ellipsis">{{item.name}}</span></h3>
-                        <ul><span>···</span></ul>
-                    </section>
-                    <section class="shoplist_main_star">
-                        <div class="shoplist_main_rateWrap">
-                            <div>fivestars</div>
-                            <span class="rating_section">{{item.rating}}</span>
-                            <span class="order_section">月售{{item.recent_order_num}}单</span>
-                        </div>
-                        <div class="shoplist_main_delivery">
-                            <span class="delivery_left" v-if="item.delivery_mode">{{item.delivery_mode.text}}</span>
-                            <span class="delivery_right">准时达</span>
-                        </div>
-                    </section>
-                    <section class="shoplist_main_send">
-                        <div class="moneylimit">
-                            <span>￥{{item.float_minimum_order_amount}}起送</span>
-                            <span>配送费￥{{item.float_delivery_fee}}</span>
-                        </div>
-                        <div class="timedistanceWrap">
-                            <span class="distanceWrap" v-if="Number(item.distance)">{{item.distance > 1000 ? (item.distance/1000).toFixed(2)+'km' : item.distance + 'm'}}</span>
-                            <span class="distanceWrap" v-else>{{item.distance}}</span>
-                            <span class="timeWrap">{{item.order_lead_time}}</span>
-                        </div>
-                    </section>
-                </div>
-            </div>
-            <div class="shoplist_info_activity">
-                <section class="activity_tagLine">
-                    <span class="mini-tag" v-for="(item,index) in item.support_tags" :key="index" >{{item.text}}</span>
-                </section>
-                <span></span>
-                <section class="activities_listWrap">
-                    <div class="activityList">
-
-                        <div class="actRow" v-for="(item,i) in item.activities" :key="i" v-show="i<2">
-                            <span class="actRow_iconWrap">{{item.icon_name}}</span>
-                            <span class="actRow_desc ellipsis">{{item.description}}</span>
-                        </div>
+        <router-link :to="{ path: 'shop'}" v-for="(item,index) in restaurants" :key="index" tag="section" class="shoplist_info" >
+            <!--<section class="shoplist_info" v-for="(item,index) in restaurants" :key="index" @click="skipToShop">-->
+                <div class="shoplist_info_introduce">
+                    <div class="shoplist_logo">
+                        <img :src="item.image_path" alt="" >
                     </div>
-                    <div class="activityBtn" @click="activitiesShow(index)" v-if="item.activities.length>2">
-                        <span>{{item.activities.length}}个活动<i class="icon iconfont icon-xialajiantou"></i></span>
+                    <div class="shoplist_main">
+                        <section class="shoplist_main_name">
+                            <h3><i class="icon iconfont icon-dingweiweizhi"></i><span class="ellipsis">{{item.name}}</span></h3>
+                            <ul><span>···</span></ul>
+                        </section>
+                        <section class="shoplist_main_star">
+                            <div class="shoplist_main_rateWrap">
+                                <div>fivestars</div>
+                                <span class="rating_section">{{item.rating}}</span>
+                                <span class="order_section">月售{{item.recent_order_num}}单</span>
+                            </div>
+                            <div class="shoplist_main_delivery">
+                                <span class="delivery_left" v-if="item.delivery_mode">{{item.delivery_mode.text}}</span>
+                                <span class="delivery_right">准时达</span>
+                            </div>
+                        </section>
+                        <section class="shoplist_main_send">
+                            <div class="moneylimit">
+                                <span>￥{{item.float_minimum_order_amount}}起送</span>
+                                <span>配送费￥{{item.float_delivery_fee}}</span>
+                            </div>
+                            <div class="timedistanceWrap">
+                                <span class="distanceWrap" v-if="Number(item.distance)">{{item.distance > 1000 ? (item.distance/1000).toFixed(2)+'km' : item.distance + 'm'}}</span>
+                                <span class="distanceWrap" v-else>{{item.distance}}</span>
+                                <span class="timeWrap">{{item.order_lead_time}}</span>
+                            </div>
+                        </section>
                     </div>
-                </section>
-            </div>
-         </section>
+                </div>
+                <div class="shoplist_info_activity">
+                    <section class="activity_tagLine">
+                        <span class="mini-tag" v-for="(item,index) in item.support_tags" :key="index" >{{item.text}}</span>
+                    </section>
+                    <span></span>
+                    <section class="activities_listWrap" >
+                        <div class="activityList" >
 
+                            <div class="actRow" v-for="(item,i) in item.activities" :key="i" v-show="showList[index] ? i>=0 : i<=1" >
+                                <span class="actRow_iconWrap">{{item.icon_name}}</span>
+                                <span class="actRow_desc ellipsis">{{item.description}}</span>
+                            </div>
+                        </div>
+                        <div class="activityBtn" @click.stop="activitiesShow(index)" v-if="item.activities.length>2" >
+                            <div>
+                                <span>{{item.activities.length}}个活动</span>
+                                <span class="showIcon"><i class="icon iconfont icon-xialajiantou"  :class="{ selectedActivity : showList[index] }"></i></span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            <!--</section>-->
+        </router-link>
 
     </div>
-
 </template>
 <script>
     import loading from '@/components/common/loading.vue'
@@ -70,7 +73,7 @@
                 restaurants:[], // 店铺列表数据
                 imageURL: '//img.yzcdn.cn/upload_files/2017/07/02/af5b9f44deaeb68000d7e4a711160c53.jpg',
                 showLoading:true, //显示加载动画
-                activitiesShowAll:false, //所有活动是否全部显示
+                showList:[],//列表活动是否全部显示
                 shopListIndex:0,
                 options: {
                     pullDownRefresh: {
@@ -98,12 +101,20 @@
                 //考虑到本地模拟数据是引用类型，所以返回一个新的数组
                 this.restaurants = [...this.restaurants.info];
 
+                this.executeTask();
             },
             //开发环境与编译环境loading隐藏方式不同
-
+            executeTask(){
+                for(var i=0;i<this.restaurants.length;i++){
+                    this.showList.push(false);
+                }
+                console.log(this.showList)
+            },
+            skipToShop(){
+                this.$router.push({path: '/shop', query: {}})
+            },
             activitiesShow(index){
-                this.shopListIndex=index;
-                this.activitiesShowAll=!this.activitiesShowAll;
+                 this.showList.splice(index,1,!this.showList[index]);
             },
             hideLoading(){
                 this.showLoading = false;
@@ -129,8 +140,6 @@
 </script>
 <style lang="less" scoped>
     @import "../../assets/style/mixin";
-
-
 
     .shoplist_container{
         margin-bottom:100px;
@@ -306,6 +315,18 @@
                      color: #999;
                      text-align: right;
                      padding: 0 4px 0 0;
+                     i{
+                         display: inline-block;
+                         font-size: 12px;
+                         margin-left:4px;
+                         transform: rotate(0deg);
+                         /*transition: all .3s ease-in-out;*/
+
+                     }
+                      i.selectedActivity{
+                         transform: rotate(180deg);
+                     }
+
                  }
              }
         }

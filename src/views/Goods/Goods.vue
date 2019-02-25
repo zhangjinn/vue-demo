@@ -5,109 +5,114 @@
       <span slot='rg-logo' class="rg-logo" >登陆/注册</span>
     </head-top>
     <div class="home-wrapper">
-      <div class="main-container">
+
         <!--<van-pull-refresh v-model="isLoading" @refresh="onRefresh" class="main-container">-->
-        <div class="selected-position">
-          <div class="selected-position-in">
-            <span class="icon iconfont icon-dingweiweizhi"></span>
-            <span>龙跃苑四区</span>
-            <span class="icon iconfont icon-xialajiantou"></span>
-          </div>
-        </div>
 
-        <div class="search-wrapper">
-            <div class="search-button">
-              <a href="#" class="search-content">
-                <span class="icon iconfont icon-sousuo"></span>
-                <span class="">搜索饿了么商家、商品名称</span>
-              </a>
-            </div>
-        </div>
+          <div class="main-container">
 
-        <div class="swiper-list-container">
-          <div class="swiper-container" v-if="foodTypes.length">
-            <div class="swiper-wrapper">
-              <div class="swiper-slide food_types_container" v-for="(swiperItem, index) in foodTypes" :key="index">
-                <router-link to="/foo" class="link_to_food" v-for="(item,index) in swiperItem" :key="index">
-                  <figure class="img_txt_box">
-                    <img :src="item.image_url" alt="The Pulpit Rock">
-                    <figcaption>{{item.title}} </figcaption>
-                  </figure>
-                </router-link>
+            <div class="selected-position">
+              <div class="selected-position-in">
+                <span class="icon iconfont icon-dingweiweizhi"></span>
+                <span>龙跃苑四区</span>
+                <span class="icon iconfont icon-xialajiantou"></span>
               </div>
             </div>
-            <!-- 如果需要分页器 -->
-            <div class="swiper-pagination"></div>
-          </div>
 
-        </div>
-        <div class="notice-container">
-          <div class="notice-container-in">
-            <div class="vip-notice">
-              <div class="vip-notice-left">
-                <span class="icon iconfont icon-crown"></span>
-                <span>超级会员</span>
-                <span>
-                  <i class="icon iconfont icon-yuandian"></i>
-                  每月领20元红包
-                </span>
+            <div class="search-wrapper">
+              <div class="search-button">
+                <a href="#" class="search-content">
+                  <span class="icon iconfont icon-sousuo"></span>
+                  <span class="">搜索饿了么商家、商品名称</span>
+                </a>
               </div>
-              <span class="vip-notice-right">
-                  立即开通
-                <i class="icon iconfont icon-right"></i>
-              </span>
             </div>
-            <section class="recommend-food">
-                <div class="recommend-food-txt">
-                  <h3>品质套餐</h3>
-                  <p>搭配齐全吃的好</p>
-                  <p><span>立即抢购</span><span class="icon iconfont icon-right"></span></p>
-                </div>
-                <div class="recommend-food-pic">
-                  <img :src="images[0].src" alt="">
-                </div>
-            </section>
-            <div class="swiper-pic-container">
-              <div class="swiper-container">
+
+
+            <div class="swiper-list-container">
+              <div class="swiper-container" v-if="foodTypes.length">
                 <div class="swiper-wrapper">
-                  <div class="swiper-slide" v-for="(image, index) in images" :key="index">
-                    <img :src="image.src" alt="">
+                  <div class="swiper-slide food_types_container" v-for="(swiperItem, index) in foodTypes" :key="index">
+                    <router-link to="/foo" class="link_to_food" v-for="(item,index) in swiperItem" :key="index">
+                      <figure class="img_txt_box">
+                        <img :src="item.image_url" alt="The Pulpit Rock">
+                        <figcaption>{{item.title}} </figcaption>
+                      </figure>
+                    </router-link>
                   </div>
                 </div>
                 <!-- 如果需要分页器 -->
                 <div class="swiper-pagination"></div>
               </div>
-              <div class="business-licence">
-                资质证照
+
+            </div>
+            <div class="notice-container">
+              <div class="notice-container-in">
+                <div class="vip-notice">
+                  <div class="vip-notice-left">
+                    <span class="icon iconfont icon-crown"></span>
+                    <span>超级会员</span>
+                  <span>
+                    <i class="icon iconfont icon-yuandian"></i>
+                    每月领20元红包
+                  </span>
+                  </div>
+                <span class="vip-notice-right">
+                    立即开通
+                  <i class="icon iconfont icon-right"></i>
+                </span>
+                </div>
+                <section class="recommend-food">
+                  <div class="recommend-food-txt">
+                    <h3>品质套餐</h3>
+                    <p>搭配齐全吃的好</p>
+                    <p><span>立即抢购</span><span class="icon iconfont icon-right"></span></p>
+                  </div>
+                  <div class="recommend-food-pic">
+                    <img :src="images[0].src" alt="">
+                  </div>
+                </section>
+                <div class="swiper-pic-container">
+                  <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                      <div class="swiper-slide" v-for="(image, index) in images" :key="index">
+                        <img :src="image.src" alt="">
+                      </div>
+                    </div>
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination"></div>
+                  </div>
+                  <div class="business-licence">
+                    资质证照
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="shop-list-title">
-          <span class="icon iconfont icon-line"></span>
-          推荐商家
-          <span class="icon iconfont icon-line"></span>
-        </div>
-        <div class="filter-shop">
-          <div class="filter-shop-container">
-            <a href="#" class="filter-nav">
-              <span>综合排序</span>
-              <i class="icon iconfont icon-xialajiantou"></i>
-            </a>
-            <a href="#" class="filter-nav"><span>距离最近</span></a>
-            <a href="#" class="filter-nav"><span>品质联盟</span></a>
-            <a href="#" class="filter-nav-more"><span>筛选</span><i class="icon iconfont icon-shaixuan1"></i></a>
-          </div>
-        </div>
+            <div class="shop-list-title">
+              <span class="icon iconfont icon-line"></span>
+              推荐商家
+              <span class="icon iconfont icon-line"></span>
+            </div>
 
-        <div class="shop-list-wrapper">
+            <div class="filter-shop">
+              <div class="filter-shop-container">
+                <a href="#" class="filter-nav">
+                  <span>综合排序</span>
+                  <i class="icon iconfont icon-xialajiantou"></i>
+                </a>
+                <a href="#" class="filter-nav"><span>距离最近</span></a>
+                <a href="#" class="filter-nav"><span>品质联盟</span></a>
+                <a href="#" class="filter-nav-more"><span>筛选</span><i class="icon iconfont icon-shaixuan1"></i></a>
+              </div>
+            </div>
 
-          <shop-list></shop-list>
-        </div>
+            <div class="shop-list-wrapper">
+              <shop-list></shop-list>
+            </div>
+
+          </div>
 
         <!--</van-pull-refresh>-->
 
-      </div>
     </div>
 
     <foot-guide></foot-guide>
@@ -173,6 +178,7 @@ export default {
          });
 
     },
+
     onRefresh() {
       setTimeout(() => {
         this.$toast('刷新成功');
@@ -214,9 +220,16 @@ export default {
 </script>
 <style lang="less" scoped>
   @import "../../assets/style/mixin";
-
+  .scroll-ele{
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: #fff;
+  }
   .main-container{
     margin:46px 0 50px 0;
+
+
     .selected-position{
       padding: 10px 15px 0;
       .linear-gradient(90deg,#0af,#0085ff);
