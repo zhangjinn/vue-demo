@@ -4,6 +4,7 @@ import router from "./router/index";
 import store from "./store/index";
 import Vant from 'vant';
 import Cube from 'cube-ui';
+import VueScroller from 'vue-scroller'
 import 'vant/lib/index.css';
 import "./config/rem"
 import { Lazyload } from 'vant';
@@ -16,6 +17,7 @@ import http from './service/http'
 Vue.use(Cube);
 Vue.use(Vant);
 Vue.use(Lazyload);
+Vue.use(VueScroller);
 Vue.config.productionTip = false;
 Vue.prototype.$http = http;
 

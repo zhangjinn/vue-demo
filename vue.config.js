@@ -81,10 +81,10 @@ module.exports = {
         proxy: { // 配置多个代理
 
             '/foo': {
-                target: 'http://rap2api.taobao.org', // 代理接口 // 需要请求的地址
+                target: 'http://rap2api.taobao.org', // 代理接口--需要请求的地址
                 ws: true,
                 changeOrigin: true, //开启代理
-                pathRewrite: {  //使用/foo 来代替http://rap2api.taobao.org/app/mock
+                pathRewrite: {  //使用/foo 来代替http://rap2api.taobao.org/app/mock/122056
                     '^/foo': '/app/mock/122056' //代理路径
                 }
             },

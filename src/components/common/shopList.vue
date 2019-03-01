@@ -1,7 +1,6 @@
 <template>
     <div class="shoplist_container">
         <router-link :to="{ path: 'shop'}" v-for="(item,index) in restaurants" :key="index" tag="section" class="shoplist_info" >
-            <!--<section class="shoplist_info" v-for="(item,index) in restaurants" :key="index" @click="skipToShop">-->
                 <div class="shoplist_info_introduce">
                     <div class="shoplist_logo">
                         <img :src="item.image_path" alt="" >
@@ -56,85 +55,38 @@
                         </div>
                     </section>
                 </div>
-            <!--</section>-->
         </router-link>
-
     </div>
 </template>
 <script>
-    import loading from '@/components/common/loading.vue'
     export default{
+        props:{
+            restaurants:{
+                type:Array,
+                required:true
+            }
+        },
         data(){
             return{
                 list: [],
-                loading: false,
-                finished: false,
-                error: false,
-                restaurants:[], // 店铺列表数据
-                imageURL: '//img.yzcdn.cn/upload_files/2017/07/02/af5b9f44deaeb68000d7e4a711160c53.jpg',
-                showLoading:true, //显示加载动画
                 showList:[],//列表活动是否全部显示
-                shopListIndex:0,
-                options: {
-                    pullDownRefresh: {
-                        threshold: 60,
-                        // stop: 44,
-                        stopTime: 1000,
-                        txt: '更新成功'
-                    },
-                    pullUpLoad: true
-                }
+                shopListIndex:0
             }
         },
-        components:{
-            loading
-        },
         mounted(){
-            this.infoRequest();
-            this.onLoad();
-
+            this.executeTask();
         },
         methods:{
-            async infoRequest(){
-                this.restaurants=await this.$http.get('/foo/vDemo/restaurants');
-                this.hideLoading();
-                //考虑到本地模拟数据是引用类型，所以返回一个新的数组
-                this.restaurants = [...this.restaurants.info];
-
-                this.executeTask();
-            },
-            //开发环境与编译环境loading隐藏方式不同
             executeTask(){
                 for(var i=0;i<this.restaurants.length;i++){
                     this.showList.push(false);
                 }
                 console.log(this.showList)
             },
-            skipToShop(){
-                this.$router.push({path: '/shop', query: {}})
-            },
             activitiesShow(index){
                  this.showList.splice(index,1,!this.showList[index]);
-            },
-            hideLoading(){
-                this.showLoading = false;
-            },
-            onLoad() {
-                // 异步更新数据
-                setTimeout(() => {
-                    for (let i = 0; i < 10; i++) {
-                    this.list.push(this.list.length + 1);
-                }
-                // 加载状态结束
-                this.loading = false;
-                // 数据全部加载完成
-                if (this.list.length >= 40) {
-                    this.finished = true;
-                }
-            }, 500);
-
-
             }
+
         }
     }
 </script>
@@ -142,7 +94,6 @@
     @import "../../assets/style/mixin";
 
     .shoplist_container{
-        margin-bottom:100px;
         .shoplist_info{
             background-color: #fff;
             color: #666;
