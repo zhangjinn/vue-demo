@@ -1,6 +1,6 @@
 <template>
     <div class="shoplist_container">
-        <router-link :to="{ path: 'shop'}" v-for="(item,index) in restaurants" :key="index" tag="section" class="shoplist_info" >
+        <router-link :to="{ path: 'shop'}" v-for="(item,index) in restaurantsList" :key="index" tag="section" class="shoplist_info" >
                 <div class="shoplist_info_introduce">
                     <div class="shoplist_logo">
                         <img :src="item.image_path" alt="" >
@@ -69,19 +69,34 @@
         data(){
             return{
                 list: [],
+                restaurantsList:[],
                 showList:[],//列表活动是否全部显示
                 shopListIndex:0
             }
         },
         mounted(){
-            this.executeTask();
+
+        },
+        watch:{
+            restaurants:{
+                handler(val,oldVal){
+                    console.log(val);
+                    this.restaurantsList=val;
+                    this.$nextTick(function() {
+                        this.executeTask();
+                    });
+
+                },
+                immediate:true,//关键
+                deep:true
+            }
         },
         methods:{
             executeTask(){
-                for(var i=0;i<this.restaurants.length;i++){
+                this.showList=[];
+                for(var i=0;i<this.restaurantsList.length;i++){
                     this.showList.push(false);
                 }
-                console.log(this.showList)
             },
             activitiesShow(index){
                  this.showList.splice(index,1,!this.showList[index]);

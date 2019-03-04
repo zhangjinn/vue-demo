@@ -96,7 +96,7 @@
                                                 </div>
                                             </section>
                                             <time class="rated_at">
-                                                {{item.rated_at}}
+                                               {{item.rated_at}}
                                             </time>
                                         </header>
                                         <ul class="food_img_ul">
@@ -107,7 +107,7 @@
                                         </ul>
                                         <ul class="food_name_ul">
                                             <li class="ellipsis" v-for="(item,index) in item.item_ratings" :key="index">
-                                                {{item.food_name}}
+                                                  {{item.food_name}}
                                             </li>
 
                                         </ul>
@@ -154,7 +154,7 @@
             this.initData();
         },
         components:{
-            loading
+          loading
         },
         watch:{
             //showLoading变化时说明组件已经获取初始化数据，在下一帧nextTick进行后续操作
@@ -163,7 +163,7 @@
                     this.$nextTick(()=>{
 
                         this.executeWork();
-                })
+                    })
                 }
             },
             //切换到评论状态
@@ -171,20 +171,20 @@
                 if(value==="rating"){
                     this.$nextTick(()=>{
                         this.ratingScroll=new BScroll(this.$refs.ratingList,{
-                        probeType: 3,
-                        deceleration: 0.003,
-                        bounce: false,
-                        swipeTime: 2000,
-                        click: true
-                    });
-                    this.ratingScroll.on('scroll',(pos)=>{
-                        if (Math.abs(Math.round(pos.y)) >=  Math.abs(Math.round(this.ratingScroll.maxScrollY))){
-                        this.loaderMoreRating();
-                        this.ratingScroll.refresh();
-                    }
-                })
+                            probeType: 3,
+                            deceleration: 0.003,
+                            bounce: false,
+                            swipeTime: 2000,
+                            click: true
+                        });
+                        this.ratingScroll.on('scroll',(pos)=>{
+                            if (Math.abs(Math.round(pos.y)) >=  Math.abs(Math.round(this.ratingScroll.maxScrollY))){
+                                this.loaderMoreRating();
+                                this.ratingScroll.refresh();
+                            }
+                        })
 
-                })
+                    })
                 }
             }
 
@@ -193,121 +193,121 @@
 
             //初始化时获取基本数据
             async initData(){
-        //商品列表
-        this.menuList=await this.$http.get('/api/foodMenu');
-        //评论列表
-        this.ratingList=await this.$http.get('/foo/rateList');
+                //商品列表
+                this.menuList=await this.$http.get('/api/foodMenu');
+                //评论列表
+                this.ratingList=await this.$http.get('/foo/rateList');
 
-        this.menuList = [...this.menuList.info];
-        this.ratingList = [...this.ratingList.info];
-        console.log(this.ratingList)
-        this.hideLoading();
-    },
-    //加载更多评论
-    async loaderMoreRating(){
-        if (this.preventRepeatRequest) {
-            return
+                this.menuList = [...this.menuList.info];
+                this.ratingList = [...this.ratingList.info];
+                console.log(this.ratingList)
+                this.hideLoading();
+            },
+            //加载更多评论
+            async loaderMoreRating(){
+                if (this.preventRepeatRequest) {
+                    return
+                }
+                this.loadRatings = true;
+                this.preventRepeatRequest = true;
+                this.ratingOffset += 10;
+                let ratingDate=await this.$http.get('/foo/rateList');
+                    ratingDate= [...ratingDate.info] ;
+                this.ratingList = [...this.ratingList,...ratingDate]; //展开运算符结合数组
+                this.loadRatings = false;
+                this.preventRepeatRequest = false;
+
+            },
+            showDialog() {
+                    this.$createDialog({
+                        type: 'alert',
+                        title: 'Alert',
+                        content: 'dialog content'
+                    }).show()
+            },
+            onClick(index, title) {
+                this.$toast(title);
+            },
+            onChange(key) {
+                this.activeKey = key;
+            },
+            //隐藏动画
+            hideLoading(){
+                this.showLoading = false;
+            },
+            //点击左侧食品列表标题，相应列表移动到最顶层
+            chooseMenu(index){
+                this.menuIndex = index;
+                //menuIndexChange解决运动时listenScroll依然监听的bug
+                this.menuIndexChange = false;
+                this.foodScroll.scrollTo(0,-this.shopListTop[index],400); //选择左侧监听右侧
+                this.foodScroll.on('scrollEnd',()=>{
+                    this.menuIndexChange = true;
+                })
+
+
+            },
+            //获取数据后执行
+            executeWork(){
+                this.$nextTick(() => {
+                    this.getFoodListHeight();
+
+                    console.log(this.menuList)
+                })
+            },
+
+            //获取食品列表的高度，存入shopListTop
+            getFoodListHeight(){
+                const listContainer=this.$refs.menuFoodList;
+                if(listContainer){
+                    const listArr = Array.from(listContainer.children[0].children);//ES6 Array.from()方法就是将一个类数组对象或者可遍历对象转换成一个真正的数组。
+                    listArr.forEach((item, index)=>{
+                        this.shopListTop[index]=item.offsetTop;
+                    })
+
+                    this.listenScroll(listContainer)
+                }
+
+
+            },
+
+            //当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
+            listenScroll(element){
+                //左侧滚动初始化
+                if(!this.scroll){
+                    this.scroll = new BScroll(this.$refs.wrapperMenu, {
+                        click: true
+                    });
+                }else{
+                    this.scroll.refresh()
+                }
+                //右侧滚动初始化
+                this.foodScroll=new BScroll(element,{
+                    probeType: 3,
+                    deceleration: 0.001,
+                    bounce: false,
+                    swipeTime: 2000,
+                    click: true
+                });
+                const wrapMenuHeight=this.$refs.wrapperMenu.clientHeight;
+                this.foodScroll.on('scroll',(pos)=>{//滚动右侧监听左侧
+                    if(!this.$refs.wrapperMenu){
+                            return
+                    }
+
+                    this.shopListTop.forEach((item,index)=>{
+                        if(this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item){
+                            this.menuIndex = index;
+                            const menuList=this.$refs.wrapperMenu.querySelectorAll('.activity_menu');
+                            const el = menuList[0];
+                            this.scroll.scrollToElement(el, 800, 0, -(wrapMenuHeight/2 - 50));
+
+                        }
+                    })
+                })
+            }
+
         }
-        this.loadRatings = true;
-        this.preventRepeatRequest = true;
-        this.ratingOffset += 10;
-        let ratingDate=await this.$http.get('/foo/rateList');
-        ratingDate= [...ratingDate.info] ;
-        this.ratingList = [...this.ratingList,...ratingDate]; //展开运算符结合数组
-        this.loadRatings = false;
-        this.preventRepeatRequest = false;
-
-    },
-    showDialog() {
-        this.$createDialog({
-            type: 'alert',
-            title: 'Alert',
-            content: 'dialog content'
-        }).show()
-    },
-    onClick(index, title) {
-        this.$toast(title);
-    },
-    onChange(key) {
-        this.activeKey = key;
-    },
-    //隐藏动画
-    hideLoading(){
-        this.showLoading = false;
-    },
-    //点击左侧食品列表标题，相应列表移动到最顶层
-    chooseMenu(index){
-        this.menuIndex = index;
-        //menuIndexChange解决运动时listenScroll依然监听的bug
-        this.menuIndexChange = false;
-        this.foodScroll.scrollTo(0,-this.shopListTop[index],400); //选择左侧监听右侧
-        this.foodScroll.on('scrollEnd',()=>{
-            this.menuIndexChange = true;
-    })
-
-
-    },
-    //获取数据后执行
-    executeWork(){
-        this.$nextTick(() => {
-            this.getFoodListHeight();
-
-        console.log(this.menuList)
-    })
-    },
-
-    //获取食品列表的高度，存入shopListTop
-    getFoodListHeight(){
-        const listContainer=this.$refs.menuFoodList;
-        if(listContainer){
-            const listArr = Array.from(listContainer.children[0].children);//ES6 Array.from()方法就是将一个类数组对象或者可遍历对象转换成一个真正的数组。
-            listArr.forEach((item, index)=>{
-                this.shopListTop[index]=item.offsetTop;
-        })
-
-            this.listenScroll(listContainer)
-        }
-
-
-    },
-
-    //当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
-    listenScroll(element){
-        //左侧滚动初始化
-        if(!this.scroll){
-            this.scroll = new BScroll(this.$refs.wrapperMenu, {
-                click: true
-            });
-        }else{
-            this.scroll.refresh()
-        }
-        //右侧滚动初始化
-        this.foodScroll=new BScroll(element,{
-            probeType: 3,
-            deceleration: 0.001,
-            bounce: false,
-            swipeTime: 2000,
-            click: true
-        });
-        const wrapMenuHeight=this.$refs.wrapperMenu.clientHeight;
-        this.foodScroll.on('scroll',(pos)=>{//滚动右侧监听左侧
-            if(!this.$refs.wrapperMenu){
-            return
-        }
-
-        this.shopListTop.forEach((item,index)=>{
-            if(this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item){
-            this.menuIndex = index;
-            const menuList=this.$refs.wrapperMenu.querySelectorAll('.activity_menu');
-            const el = menuList[0];
-            this.scroll.scrollToElement(el, 800, 0, -(wrapMenuHeight/2 - 50));
-
-        }
-    })
-    })
-    }
-
-    }
     }
 </script>
 <style scoped lang="less">
@@ -339,7 +339,7 @@
     }
 
     .shop_detail_header_txt{
-        height: 100px;
+       height: 100px;
         background: #00a8e6;
     }
     .change_show_type{
@@ -347,9 +347,9 @@
         background-color: #fff;
         padding: 15px 30px;
         border-bottom: 1px solid #ebebeb;
-        div{
-            flex: 1;
-            text-align: center;
+            div{
+                flex: 1;
+                text-align: center;
             span{
                 padding: .2rem .1rem;
                 border-bottom: 0.12rem solid #fff;
@@ -391,7 +391,7 @@
             flex: 4;
             overflow-y: auto;
             li{
-                margin-bottom: 50px;
+               margin-bottom: 50px;
                 section{
                     padding:5px 0;
                 }
@@ -410,20 +410,20 @@
                 .rating_header_left{
                     flex: 3;
                     text-align: center;
-                p:first-of-type{
-                    font-size: 24px;
-                    color: #f60;
-                }
-                p:nth-of-type(2){
-                    font-size: 16px;
-                    color: #666;
-                    margin-bottom: 2px;
-                }
-                p:nth-of-type(3){
-                    font-size: 14px;
-                    color: #999;
-                    margin-bottom: 2px;
-                }
+                    p:first-of-type{
+                        font-size: 24px;
+                        color: #f60;
+                    }
+                    p:nth-of-type(2){
+                        font-size: 16px;
+                        color: #666;
+                        margin-bottom: 2px;
+                    }
+                    p:nth-of-type(3){
+                        font-size: 14px;
+                        color: #999;
+                        margin-bottom: 2px;
+                    }
                 }
                 .rating_header_right{
                     flex: 4;
@@ -435,6 +435,8 @@
                         line-height: 16px;
 
                     }
+
+
                 }
             }
 
@@ -442,10 +444,10 @@
             .rating_list_ul{
                 background-color: #fff;
                 padding: 0 10px;
-                    .rating_list_li{
-                        border-top: 1px solid #f1f1f1;
-                        display: flex;
-                        padding: 12px;
+                .rating_list_li{
+                    border-top: 1px solid #f1f1f1;
+                    display: flex;
+                    padding: 12px;
                     .user_avatar{
                         .wh(30px, 30px);
                         border-radius: 50%;
@@ -461,34 +463,34 @@
                             .username_star{
 
                                 color: #666;
-                            .username{
-                                display: flex;
-                                margin-bottom: 6px;
-                            }
-                            .star_desc{
-                                display: flex;
-                                align-items: center;
-                            }
+                                .username{
+                                    display: flex;
+                                    margin-bottom: 6px;
+                                }
+                                .star_desc{
+                                    display: flex;
+                                    align-items: center;
+                                }
                             }
                             .rated_at{
                                 color: #999;
                             }
                         }
                         .food_img_ul{
-                            display: flex;
-                            flex-wrap: wrap;
-                            margin-bottom: 8px;
+                             display: flex;
+                             flex-wrap: wrap;
+                             margin-bottom: 8px;
                             li{
                                 .wh(60px,60px);
                                 margin:0 8px 6px 0;
                                 img{
-                                .wh(100%,100%);
+                                    .wh(100%,100%);
                                 }
                             }
-                        }
+                         }
                         .food_name_ul{
-                            display: flex;
-                            flex-wrap: wrap;
+                             display: flex;
+                             flex-wrap: wrap;
                             li{
                                 font-size: 11px;
                                 color: #999;
@@ -499,7 +501,7 @@
                                 margin-right: 6px;
                                 margin-bottom: 8px;
                             }
-                        }
+                         }
                     }
                 }
             }
