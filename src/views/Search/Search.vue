@@ -1,266 +1,109 @@
 <template>
     <div>
-        <!--<head-top head-title="搜索" goBack="true"></head-top>-->
-
-        <!--<section>-->
-            <div class="shop-nav">
-                <div class="shop-nav-content">
-                    <nav>
-                        <router-link :to="{ path: 'goods' }"><</router-link>
-                    </nav>
-                    <div class="shop-summary">
-                        <div class="shop-summary-img">
-                            <span class="logoBg"><span class="logoTxt">品牌</span></span>
-                            <img :src="images[0].src" alt="">
-                        </div>
-                        <div class="shop-summary-name">
-                            <h2 class="shop-summary-position">
-                                <span>比道客麻辣烫比道客麻辣烫(三道街店)</span>
-                                <i class="icon iconfont icon-xialajiantou"></i>
-                            </h2>
-                            <div class="shop-summary-status">
-                                <span class="shop-summary-evaluate">评价4.8</span>
-                                <span class="shop-summary-sale">月售2597单</span>
-                                <span class="shop-summary-delivery">蜂鸟专送约33分钟</span>
-                            </div>
-                        </div>
-                        <div class="shop-summary-bargain">
-                            <div class="bargain-goods">
-                                <div class="bargain-goods-in">
-                                    <span class="bargain-goods-logo">特价</span>
-                                    <span class="bargain-goods-txt">特价商品48元起特价商品48元起特价商品48元起特价商品48元起</span>
-                                </div>
-                            </div>
-                            <div class="bargain-num">
-                                1个优惠
-                                <i class="icon iconfont icon-xialajiantou"></i>
-                            </div>
-                        </div>
-                        <p class="shop-summary-notice">公告：温馨提示： 冰淇淋属于易融化产品，暴风雪类产品会配置干冰，干冰具有较强的制冻功能，您拿到的冰淇淋顶部会凝冻想象，属于正常现象，视情况，可缓化5分钟左右再享用，口感更佳.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="shop-tab-sticky">
-                <div class="shop-tab">
-                    <div class="shop-tab-item" :class="{activity_show: changeShowType=='order'}" @click="changeShowType='order'">
-                        <p>点餐 <span></span></p>
-                    </div>
-                    <div class="shop-tab-item" :class="{activity_show: changeShowType=='evaluate'}" @click="changeShowType='evaluate'">
-                        <p>评价 <span></span></p>
-                    </div>
-                    <div class="shop-tab-item" :class="{activity_show: changeShowType=='business'}" @click="changeShowType='business'">
-                        <p>商家 <span></span></p>
-                    </div>
-                </div>
-            </div>
-
-            <transition name="fade-choose">
-               <section class="order-info" v-show="changeShowType=='order'">
-                   点餐
-               </section>
-            </transition>
-            <transition name="fade-choose">
-                <section class="evaluate-info" v-show="changeShowType=='evaluate'">
-                    评价
-                </section>
-            </transition>
-            <transition name="fade-choose">
-                <section class="business-info" v-show="changeShowType=='business'">
-                    商家
-                </section>
-            </transition>
-        <!--</section>-->
-
-        <foot-guide></foot-guide>
+        <!--mescroll滚动区域的基本结构-->
+        <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
+            <!--内容...-->
+        </mescroll-vue>
     </div>
 </template>
-<script>
-    import headTop from '@/components/header/head.vue'
-    import footGuide from '@/components/footer/footGuide.vue'
-    import img1 from '@/assets/img/pic1.jpg'
-    export default {
-        name: "search",
-        data(){
-          return{
 
-              changeShowType:'order',//切换显示商品或者评价
-                images: [
-                    {src: img1}
-                ]
+<script>
+    // 引入mescroll的vue组件
+    import MescrollVue from 'mescroll.js/mescroll.vue'
+
+    export default {
+        name: 'xxx',
+        components: {
+            MescrollVue // 注册mescroll组件
+        },
+        data () {
+            return {
+                mescroll: null, // mescroll实例对象
+                mescrollDown:{}, //下拉刷新的配置. (如果下拉刷新和上拉加载处理的逻辑是一样的,则mescrollDown可不用写了)
+                mescrollUp: { // 上拉加载的配置.
+                    callback: this.upCallback, // 上拉回调,此处简写; 相当于 callback: function(page, mescroll) { }
+                    //以下是一些常用的配置,当然不写也可以的.
+                    page: {
+                        num: 0, //当前页 默认0,回调之前会加1; 即callback(page)会从1开始
+                        size: 10 //每页数据条数,默认10
+                    },
+                    htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
+                    noMoreSize: 5, //如果列表已无数据,可设置列表的总数量要大于5才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看这就是为什么无更多数据有时候不显示的原因
+                    toTop: {
+                        //回到顶部按钮
+                        src: "./static/mescroll/mescroll-totop.png", //图片路径,默认null,支持网络图
+                        offset: 1000 //列表滚动1000px才显示回到顶部按钮
+                    },
+                    empty: {
+                        //列表第一页无任何数据时,显示的空提示布局; 需配置warpId才显示
+                        warpId: "xxid", //父布局的id (1.3.5版本支持传入dom元素)
+                        icon: "./static/mescroll/mescroll-empty.png", //图标,默认null,支持网络图
+                        tip: "暂无相关数据~" //提示
+                    }
+                },
+                dataList: [] // 列表数据
             }
         },
-        components: {
-            headTop,
-            footGuide
+        beforeRouteEnter (to, from, next) { // 如果没有配置回到顶部按钮或isBounce,则beforeRouteEnter不用写
+            next(vm => {
+                // 找到当前mescroll的ref,调用子组件mescroll-vue的beforeRouteEnter方法
+                vm.$refs.mescroll && vm.$refs.mescroll.beforeRouteEnter() // 进入路由时,滚动到原来的列表位置,恢复回到顶部按钮和isBounce的配置
+            })
+        },
+        beforeRouteLeave (to, from, next) { // 如果没有配置回到顶部按钮或isBounce,则beforeRouteLeave不用写
+            // 找到当前mescroll的ref,调用子组件mescroll-vue的beforeRouteLeave方法
+            this.$refs.mescroll && this.$refs.mescroll.beforeRouteLeave() // 退出路由时,记录列表滚动的位置,隐藏回到顶部按钮和isBounce的配置
+            next()
+        },
+        methods: {
+            async initData(){
+                //商品列表
+                this.dataList=await this.$http.get('/api/foodMenu');
+                this.dataList = [...this.menuList.info];
+                console.log(this.dataList)
+
+            },
+            // mescroll组件初始化的回调,可获取到mescroll对象
+            mescrollInit (mescroll) {
+                this.mescroll = mescroll  // 如果this.mescroll对象没有使用到,则mescrollInit可以不用配置
+            },
+            // 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
+            upCallback (page, mescroll) {
+                // 联网请求
+
+
+                this.initData();
+//                axios.get('xxxxxx', {
+//                    params: {
+//                        num: page.num, // 页码
+//                        size: page.size // 每页长度
+//                    }
+//                }).then((response) => {
+//                    // 请求的列表数据
+//                    let arr = response.data
+//                    // 如果是第一页需手动制空列表
+//                    if (page.num === 1) this.dataList = []
+//                    // 把请求到的数据添加到列表
+//                    this.dataList = this.dataList.concat(arr)
+//                    // 数据渲染成功后,隐藏下拉刷新的状态
+//                    this.$nextTick(() => {
+//                        mescroll.endSuccess(arr.length)
+//                    })
+//                }).catch((e) => {
+//                    // 联网失败的回调,隐藏下拉刷新和上拉加载的状态;
+//                    mescroll.endErr()
+//                })
+            }
         }
-    };
+    }
 </script>
-<style scoped lang="less">
-    @import "../../assets/style/mixin";
-.shop-nav{
-    position: relative;
-    &-content{
-        padding-top: 100px;
-        background: #fff;
-        nav{
-            .wh(100%,100px);
-            position: absolute;
-            top:0;
-            left:0;
-            background: #ffd695;
-            text-align: left;
-            a{
-                font-size: 30px;
-                color: #fff;
-                margin-left: 5px;
-            }
-        }
-        .shop-summary{
-            padding: 35px 0 0;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
 
-            .shop-summary-img{
-               .wh(80px,80px);
-                background: #00a8e6;
-                position: absolute;
-                top:0;
-                left: 50%;
-                margin-left: -40px;
-                margin-top: -60px;
-                .logoBg{
-                    position: absolute;
-                    left: 0;
-                    top:0;
-                    .linear-gradient(90deg,#fff100,#ffe339);
-                    .wh(25px,15px);
-                    border-top-left-radius: 4px;
-                    border-bottom-right-radius: 4px;
-                    .logoTxt{
-                        color: #6f3f15;
-                        font-weight: 700;
-                        font-size: 12px;
-                        transform: scale(.8);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                    }
-                }
-                img{
-                    .wh(100%,100%);
-                    .border-radius(4px);
-                }
-
-            }
-            .shop-summary-name{
-                flex: 1;
-                width: 300px;
-                .shop-summary-position{
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    font-size: 26px;
-                    font-weight: bold;
-                    span{
-                        text-align: left;
-                        overflow: hidden;
-                        white-space:nowrap;
-                        text-overflow: ellipsis;
-                    }
-                    i{
-                        width: 35px;
-                    }
-                }
-                .shop-summary-status{
-                    white-space:nowrap;
-                    color: #666;
-                    font-size: 12px;
-                    padding-top: 15px;
-                    text-align: center;
-                    >span:not(:last-child){
-                        margin-right: 8px;
-                     }
-
-                }
-
-            }
-            .shop-summary-bargain{
-                width: 100%;
-                padding: 15px 30px 0;
-                display: flex;
-                font-size: 12px;
-                color: #333;
-                justify-content: space-between;
-                align-items: center;
-                .bargain-goods{
-                    flex: 1;
-                    overflow: hidden;
-                    .bargain-goods-in{
-                        display: flex;
-                        justify-content: flex-start;
-                        .bargain-goods-logo{
-                           margin-right: 15px;
-                        }
-                        .bargain-goods-txt{
-                            flex: 1;
-                            overflow: hidden;
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                        }
-                    }
-                }
-                .bargain-num{
-                    width: 80px;
-                    text-align: right;
-                }
-            }
-            .shop-summary-notice{
-                font-size: 12px;
-                padding: 15px 30px 20px;
-                width: 100%;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                color: #999;
-            }
-        }
-     }
-}
-   .shop-tab-sticky{
-       .shop-tab{
-           display: flex;
-           align-items: center;
-           background-color: #fff;
-           line-height: 40px;
-            border-bottom:1px solid #ebebeb;
-            color:#666;
-           .shop-tab-item{
-               flex: 1;
-               p{
-                   display: inline-block;
-               }
-           }
-            .activity_show{
-                p{
-                    position: relative;
-                    color: #333;
-                    font-weight: 700;
-                    span{
-                        position: absolute;
-                        left:0;
-                        bottom:0;
-                        right:0;
-                        height: 2px;
-                        background: rgb(35, 149, 255);
-                    }
-                }
-            }
-       }
-
-   }
-
-
+<style scoped>
+    /*通过fixed固定mescroll的高度*/
+    .mescroll {
+        position: fixed;
+        top: 44px;
+        bottom: 0;
+        height: auto;
+    }
 </style>

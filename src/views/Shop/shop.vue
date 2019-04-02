@@ -1,158 +1,160 @@
 <template>
     <div>
         <section v-if="!showLoading" class="shop_container">
-            <div class="shop-nav">
-                <div class="shop-nav-content">
-                    <nav>
-                        <router-link :to="{ path: 'goods' }"><</router-link>
-                    </nav>
-                    <div class="shop-summary">
-                        <div class="shop-summary-img">
-                            <span class="logoBg"><span class="logoTxt">品牌</span></span>
-                            <img :src="images[0].src" alt="">
-                        </div>
-                        <div class="shop-summary-name">
-                            <h2 class="shop-summary-position">
-                                <span>比道客麻辣烫比道客麻辣烫(三道街店)</span>
-                                <i class="icon iconfont icon-xialajiantou"></i>
-                            </h2>
-                            <div class="shop-summary-status">
-                                <span class="shop-summary-evaluate">评价4.8</span>
-                                <span class="shop-summary-sale">月售2597单</span>
-                                <span class="shop-summary-delivery">蜂鸟专送约33分钟</span>
+
+            <!--<div class="shop-wrapper">-->
+                <div class="shop-nav">
+                    <div class="shop-nav-content">
+                        <nav>
+                            <router-link :to="{ path: 'goods' }"><</router-link>
+                        </nav>
+                        <div class="shop-summary">
+                            <div class="shop-summary-img">
+                                <span class="logoBg"><span class="logoTxt">品牌</span></span>
+                                <img :src="images[0].src" alt="">
                             </div>
-                        </div>
-                        <div class="shop-summary-bargain">
-                            <div class="bargain-goods">
-                                <div class="bargain-goods-in">
-                                    <span class="bargain-goods-logo">特价</span>
-                                    <span class="bargain-goods-txt">特价商品48元起特价商品48元起特价商品48元起特价商品48元起</span>
+                            <div class="shop-summary-name">
+                                <h2 class="shop-summary-position">
+                                    <span>比道客麻辣烫比道客麻辣烫(三道街店)</span>
+                                    <i class="icon iconfont icon-xialajiantou"></i>
+                                </h2>
+                                <div class="shop-summary-status">
+                                    <span class="shop-summary-evaluate">评价4.8</span>
+                                    <span class="shop-summary-sale">月售2597单</span>
+                                    <span class="shop-summary-delivery">蜂鸟专送约33分钟</span>
                                 </div>
                             </div>
-                            <div class="bargain-num">
-                                1个优惠
-                                <i class="icon iconfont icon-xialajiantou"></i>
+                            <div class="shop-summary-bargain">
+                                <div class="bargain-goods">
+                                    <div class="bargain-goods-in">
+                                        <span class="bargain-goods-logo">特价</span>
+                                        <span class="bargain-goods-txt">特价商品48元起特价商品48元起特价商品48元起特价商品48元起</span>
+                                    </div>
+                                </div>
+                                <div class="bargain-num">
+                                    1个优惠
+                                    <i class="icon iconfont icon-xialajiantou"></i>
+                                </div>
                             </div>
+                            <p class="shop-summary-notice">公告：温馨提示： 冰淇淋属于易融化产品，暴风雪类产品会配置干冰，干冰具有较强的制冻功能，您拿到的冰淇淋顶部会凝冻想象，属于正常现象，视情况，可缓化5分钟左右再享用，口感更佳.</p>
                         </div>
-                        <p class="shop-summary-notice">公告：温馨提示： 冰淇淋属于易融化产品，暴风雪类产品会配置干冰，干冰具有较强的制冻功能，您拿到的冰淇淋顶部会凝冻想象，属于正常现象，视情况，可缓化5分钟左右再享用，口感更佳.</p>
                     </div>
                 </div>
-            </div>
-            <section class="shop-tab-sticky">
-                <div class="shop-tab" ref="chooseType">
-                    <div class="shop-tab-item" :class="{activity_show: changeShowType=='food'}" @click="changeShowType='food'">
-                        <p>点餐 <span></span></p>
+                <section class="shop-tab-sticky">
+                    <div class="shop-tab" ref="chooseType">
+                        <div class="shop-tab-item" :class="{activity_show: changeShowType=='food'}" @click="changeShowType='food'">
+                            <p>点餐 <span></span></p>
+                        </div>
+                        <div class="shop-tab-item" :class="{activity_show: changeShowType=='rating'}" @click="changeShowType='rating'">
+                            <p>评价 <span></span></p>
+                        </div>
+                        <div class="shop-tab-item" :class="{activity_show: changeShowType=='business'}" @click="changeShowType='business'">
+                            <p>商家 <span></span></p>
+                        </div>
                     </div>
-                    <div class="shop-tab-item" :class="{activity_show: changeShowType=='rating'}" @click="changeShowType='rating'">
-                        <p>评价 <span></span></p>
-                    </div>
-                    <div class="shop-tab-item" :class="{activity_show: changeShowType=='business'}" @click="changeShowType='business'">
-                        <p>商家 <span></span></p>
-                    </div>
-                </div>
-            </section>
-
-            <transition name="fade-choose">
-                <section v-show="changeShowType =='food'" class="food_container">
-                    <section class="menu_container">
-                        <section class="menu_left" id="wrapper_menu" ref="wrapperMenu">
-                            <ul>
-                                <li v-for="(item,index) in menuList" :key="index" class="menu_left_li" :class="{activity_menu: index == menuIndex}" @click="chooseMenu(index)">
-                                    <span>{{item.name}}</span>
-                                </li>
-                            </ul>
-                        </section>
-                        <section class="menu_right" ref="menuFoodList">
-                            <ul>
-                                <li v-for="(item,index) in menuList" :key="index">
-                                    <header>
-                                        <section class="menu_detail_header_left">
-                                            <strong class="menu_item_title">{{item.name}}</strong>
-                                            <span class="menu_item_description">{{item.description}}</span>
-                                        </section>
-                                    </header>
-                                    <section v-for="(foods,foodindex) in item.foods" :key="foodindex" class="menu_detail_list">
-                                        <section>
-                                            <h3 class="food_description_head">
-                                                <strong class="description_foodname">{{foods.name}}</strong>
-
-                                            </h3>
-                                        </section>
-                                    </section>
-                                </li>
-                            </ul>
-                        </section>
-                    </section>
                 </section>
-            </transition>
-            <transition name="fade-choose">
-                <section v-show="changeShowType =='rating'"  class="rating_container" >
-                    <section id="ratingContainer" ref="ratingList">
-                        <section>
-                            <header class="rating_header">
-                                <section class="rating_header_left">
-                                    <p>4.7</p>
-                                    <p>综合评价</p>
-                                    <p>高于周边商家76.9%</p>
-                                </section>
-                                <section class="rating_header_right">
-                                    <p>
-                                        <span>服务态度</span>
-                                        <section class="rating_container_in">
-                                            <div class="star_container">你好</div>
-                                        </section>
-                                        <span>4.7</span>
-                                    </p>
-                                    <p>
-                                        <span>服务态度</span>
-                                        <section class="rating_container_in">
-                                            <div class="star_container">你好</div>
-                                        </section>
-                                        <span>4.7</span>
-                                    </p>
-                                    <p>
-                                        <span>送达时间</span>
-                                        <span>分钟</span>
-                                    </p>
-                                </section>
-                            </header>
-                            <ul class="rating_list_ul">
-                                <li v-for="(item,index) in ratingList" :key="index" class="rating_list_li">
-                                    <img :src="item.touxiang" alt="" class="user_avatar">
-                                    <section class="rating_list_details">
+
+                <transition name="fade-choose">
+                    <section v-show="changeShowType =='food'" class="food_container">
+                        <section class="menu_container">
+                            <section class="menu_left" id="wrapper_menu" ref="wrapperMenu">
+                                <ul>
+                                    <li v-for="(item,index) in menuList" :key="index" class="menu_left_li" :class="{activity_menu: index == menuIndex}" @click="chooseMenu(index)">
+                                        <span>{{item.name}}</span>
+                                    </li>
+                                </ul>
+                            </section>
+                            <section class="menu_right" ref="menuFoodList">
+                                <ul>
+                                    <li v-for="(item,index) in menuList" :key="index">
                                         <header>
-                                            <section class="username_star">
-                                                <p class="username">{{item.username}}</p>
-                                                <div class="star_desc">
-                                                    <div>fivestars</div>
-                                                    <span>{{item.time_spent_desc}}</span>
-                                                </div>
+                                            <section class="menu_detail_header_left">
+                                                <strong class="menu_item_title">{{item.name}}</strong>
+                                                <span class="menu_item_description">{{item.description}}</span>
                                             </section>
-                                            <time class="rated_at">
-                                                {{item.rated_at}}
-                                            </time>
                                         </header>
-                                        <ul class="food_img_ul">
-                                            <li v-for="(item,index) in item.item_ratings" :key="index">
-                                                <img :src="item.image_hash" alt="">
-                                            </li>
-                                        </ul>
-                                        <ul class="food_name_ul">
-                                            <li class="ellipsis" v-for="(item,index) in item.item_ratings" :key="index">
-                                                {{item.food_name}}
-                                            </li>
-                                        </ul>
-                                    </section>
-                                </li>
-                            </ul>
+                                        <section v-for="(foods,foodindex) in item.foods" :key="foodindex" class="menu_detail_list">
+                                            <section>
+                                                <h3 class="food_description_head">
+                                                    <strong class="description_foodname">{{foods.name}}</strong>
+
+                                                </h3>
+                                            </section>
+                                        </section>
+                                    </li>
+                                </ul>
+                            </section>
                         </section>
                     </section>
-                </section>
-            </transition>
-
+                </transition>
+                <transition name="fade-choose">
+                    <section v-show="changeShowType =='rating'"  class="rating_container" >
+                        <section id="ratingContainer" ref="ratingList">
+                            <section>
+                                <header class="rating_header">
+                                    <section class="rating_header_left">
+                                        <p>4.7</p>
+                                        <p>综合评价</p>
+                                        <p>高于周边商家76.9%</p>
+                                    </section>
+                                    <section class="rating_header_right">
+                                        <p>
+                                            <span>服务态度</span>
+                                            <section class="rating_container_in">
+                                                <div class="star_container">你好</div>
+                                            </section>
+                                            <span>4.7</span>
+                                        </p>
+                                        <p>
+                                            <span>服务态度</span>
+                                            <section class="rating_container_in">
+                                                <div class="star_container">你好</div>
+                                            </section>
+                                            <span>4.7</span>
+                                        </p>
+                                        <p>
+                                            <span>送达时间</span>
+                                            <span>分钟</span>
+                                        </p>
+                                    </section>
+                                </header>
+                                <ul class="rating_list_ul">
+                                    <li v-for="(item,index) in ratingList" :key="index" class="rating_list_li">
+                                        <img :src="item.touxiang" alt="" class="user_avatar">
+                                        <section class="rating_list_details">
+                                            <header>
+                                                <section class="username_star">
+                                                    <p class="username">{{item.username}}</p>
+                                                    <div class="star_desc">
+                                                        <div>fivestars</div>
+                                                        <span>{{item.time_spent_desc}}</span>
+                                                    </div>
+                                                </section>
+                                                <time class="rated_at">
+                                                    {{item.rated_at}}
+                                                </time>
+                                            </header>
+                                            <ul class="food_img_ul">
+                                                <li v-for="(item,index) in item.item_ratings" :key="index">
+                                                    <img :src="item.image_hash" alt="">
+                                                </li>
+                                            </ul>
+                                            <ul class="food_name_ul">
+                                                <li class="ellipsis" v-for="(item,index) in item.item_ratings" :key="index">
+                                                    {{item.food_name}}
+                                                </li>
+                                            </ul>
+                                        </section>
+                                    </li>
+                                </ul>
+                            </section>
+                        </section>
+                    </section>
+                </transition>
+            <!--</div>-->
         </section>
 
-        <loading v-show="showLoading || loadRatings"></loading>
+        <!--<loading v-show="showLoading || loadRatings"></loading>-->
     </div>
 
 </template>
@@ -223,10 +225,10 @@
             }
 
         },
-        methods: {
+    methods: {
 
             //初始化时获取基本数据
-            async initData(){
+    async initData(){
         //商品列表
         this.menuList=await this.$http.get('/api/foodMenu');
         //评论列表
@@ -301,8 +303,6 @@
 
             this.listenScroll(listContainer)
         }
-
-
     },
 
     //当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
@@ -352,9 +352,11 @@
         -ms-flex-direction: column;
         flex-direction: column;
         position: absolute;
-        right: 0;
+        top: 0;
         left: 0;
+        width: 100%;
         height: 100%;
+
     }
     .shop-nav{
         position: relative;
@@ -515,9 +517,6 @@
             }
         }
     }
-
-
-
     .shop_detail_header_txt{
         height: 100px;
         background: #00a8e6;
