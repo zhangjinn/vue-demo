@@ -82,7 +82,7 @@
                                                 <p class="fooddetails-sales"><span>月售95份</span><span>好评率100%</span></p>
                                                 <div class="fooddetails-footer">
                                                     <span class="fooddetails-price">$30</span>
-                                                    <buy-cart :foods='foods' @showMoveDot="showMoveDotFun"></buy-cart>
+                                                    <buy-cart :shopId='shopId' :foods='foods' @showMoveDot="showMoveDotFun"></buy-cart>
                                                 </div>
                                             </div>
                                         </div>
@@ -94,7 +94,7 @@
 
                     <div class="buy_cart_container">
                         <div class="cart_icon_num">
-                            <div class="cart_icon_container">
+                            <div class="cart_icon_container" :class="{cart_icon_activity:totalPrice>0,move_in_cart:receiveInCart}" ref="cartContainer">
                                 <span class="cart_list_length">10</span>
                                 <span class="cart_icon"><i class="icon iconfont icon-gouwuche"></i></span>
                             </div>
@@ -190,10 +190,11 @@
 
 </template>
 <script>
-    import buyCart from '@/components/common/buyCart'
-    import loading from '@/components/common/loading.vue'
-    import BScroll from 'better-scroll'
-    import img1 from '@/assets/img/pic1.jpg'
+    import {mapState, mapMutations} from 'vuex';
+    import buyCart from '@/components/common/buyCart';
+    import loading from '@/components/common/loading.vue';
+    import BScroll from 'better-scroll';
+    import img1 from '@/assets/img/pic1.jpg';
     export default{
         data(){
             return{
@@ -209,12 +210,13 @@
                 ratingOffset: 0, //评价获取数据offset值
                 loadRatings: false, //加载更多评论是显示加载组件
                 preventRepeatRequest: false, // 防止多次触发数据请求
-
                 receiveInCart:false, //购物车组件下落的圆点是否到达目标位置
                 showMoveDot:[], //控制下落的小圆点的显示隐藏
                 elLeft:0, //当前点击加按钮在网页中的绝对left值
                 elBottom:0,//当前点击加按钮在网页中的绝对bottom值
                 windowHeight:null, //屏幕的高度
+                totalPrice: 0, //总共价格
+                shopId:1,
                 images: [
                     {src: img1}
                 ]
@@ -266,8 +268,11 @@
             }
 
         },
+        computed:{
+                ...mapState(['cartList'])
+        },
         methods: {
-
+            ...mapMutations(['ADD_CART']),
             //初始化时获取基本数据
             async initData(){
         //商品列表
@@ -382,13 +387,12 @@
     })
     },
     /*
-    * 显示下落的小球
-    * */
+     * 显示下落的小球
+     * */
     showMoveDotFun(showMoveDot,elLeft,elBottom){
         this.showMoveDot= [...this.showMoveDot, ...showMoveDot];
         this.elLeft=elLeft;
         this.elBottom=elBottom;
-        console.log(this.showMoveDot)
     },
     beforeEnter(el){
         el.style.transform=`translate3d(0,${this.elBottom-this.windowHeight+30}px,0)`;
@@ -403,18 +407,28 @@
         el.children[0].style.transition = 'transform .55s linear';
         this.showMoveDot = this.showMoveDot.map(item => false);
 
-//        el.addEventListener('transitionend', () => {
-//                this.listenInCart();
-//        })
-//        el.addEventListener('webkitAnimationEnd', () => {
-//                this.listenInCart();
-//        })
+        /*CSS完成过渡后触发*/
+        el.children[0].addEventListener('transitionend', () => {
+                this.listenInCart();
+        })
+        el.children[0].addEventListener('webkitAnimationEnd', () => {
+                this.listenInCart();
+        })
     },
     /*
     * 监听圆点是否到达购物车
     * */
     listenInCart(){
+        if(!this.receiveInCart){
+            this.receiveInCart=true;
+            this.$refs.cartContainer.addEventListener('animationend', () => {
+                this.receiveInCart = false;
+            })
+            this.$refs.cartContainer.addEventListener('webkitAnimationEnd', () => {
+                this.receiveInCart = false;
+            })
 
+        }
     }
 
 
@@ -423,6 +437,36 @@
 </script>
 <style scoped lang="less">
     @import "../../assets/style/mixin";
+
+    @keyframes mymove{
+        0%   { transform: scale(1) }
+        25%  { transform: scale(.8) }
+        50%  { transform: scale(1.1) }
+        75%  { transform: scale(.9) }
+        100% { transform: scale(1) }
+    }
+    @-moz-keyframes mymove{
+        0%   { transform: scale(1) }
+        25%  { transform: scale(.8) }
+        50%  { transform: scale(1.1) }
+        75%  { transform: scale(.9) }
+        100% { transform: scale(1) }
+    }
+    @-webkit-keyframes mymove{
+        0%   { transform: scale(1) }
+        25%  { transform: scale(.8) }
+        50%  { transform: scale(1.1) }
+        75%  { transform: scale(.9) }
+        100% { transform: scale(1) }
+    }
+    @-o-keyframes mymove{
+        0%   { transform: scale(1) }
+        25%  { transform: scale(.8) }
+        50%  { transform: scale(1.1) }
+        75%  { transform: scale(.9) }
+        100% { transform: scale(1) }
+    }
+
     .shop_container{
         display: -ms-flexbox;
         display: flex;
@@ -744,6 +788,9 @@
     }
 
     }
+    }
+    .move_in_cart{
+        animation: mymove .5s ease-in-out;
     }
     .cart_icon_activity{
         background-color: #3190e8;

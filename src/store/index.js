@@ -7,7 +7,8 @@ import getters from './getter'
 Vue.use(Vuex);
 
 const state={
-  footerActive:0
+  footerActive:0, //footer跳转索引
+  cartList: {} // 加入购物车的商品列表
 };
 export default new Vuex.Store({
   state,

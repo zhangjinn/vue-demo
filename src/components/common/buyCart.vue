@@ -3,12 +3,12 @@
         <section class="cart_module">
             <section class="cart_button" v-if="!foods.specifications.length">
                 <transition name="showReduce">
-                    <span v-if="foodNum" @click="removeOutCart()"><i class="icon iconfont icon-jianhao"></i></span>
+                    <span v-if="foodNum" @click="removeOutCart(foods.category_id, foods.item_id, foods.food_id, foods.name, foods.price)"><i class="icon iconfont icon-jianhao"></i></span>
                 </transition>
                 <transition name="fade">
                     <span class="cart_num" v-if="foodNum">{{foodNum}}</span>
                 </transition>
-                <span class="add_icon" @click="addToCart($event)"><i class="icon iconfont icon-plus-circle"></i></span>
+                <span class="add_icon" @click="addToCart(foods.category_id, foods.item_id, foods.food_id, foods.name, foods.price, $event)"><i class="icon iconfont icon-plus-circle"></i></span>
             </section>
             <section class="choose_specification" v-else>
                 <section class="choose_icon_container">
@@ -26,33 +26,68 @@
     </div>
 </template>
 <script>
-
+    import {mapState, mapMutations} from 'vuex';
     export default{
-        props:['foods'],
+        props:['foods','shopId'],
         data(){
             return{
                 showMoveDot:[] //控制下落的小圆点显示隐藏
             }
         },
+        mounted(){
+            console.log(this.foods)
+        },
         computed:{
+            ...mapState([
+                    'cartList'
+            ]),
+            /*
+            * 监听cartList变化，更新当前商铺的购物车信息shopCart，同时返回一个新的对象
+            * */
+            shopCart:function(){
+                return Object.assign({},this.cartList[this.shopId])
+            },
             foodNum:function(){
-                return 0;
+                let category_id = this.foods.category_id;
+                let item_id = this.foods.item_id;
+                if(this.shopCart && this.shopCart[category_id] && this.shopCart[category_id][item_id]){
+                    let num = 0;
+                    Object.values(this.shopCart[category_id][item_id]).forEach((item,index) => {
+                        num += item.num
+                    })
+                    return num;
+                }else{
+                    return 0;
+                }
+
             }
         },
         methods:{
+            ...mapMutations([
+                'ADD_CART','REDUCE_CART'
+            ]),
             //移除购物车
             removeOutCart(){
                 console.log(111)
             },
             //加入购物车，计算按钮位置
-            addToCart(event){
+            addToCart(category_id, item_id, food_id, name, price, event){
+
+                this.ADD_CART({shopid:this.shopId, category_id, item_id, food_id, name, price});
                 this.showMoveDot=[];
                 let elLeft=event.target.getBoundingClientRect().left;
                 let elBottom=event.target.getBoundingClientRect().bottom;
                 this.showMoveDot.push(true);
-                console.log( this.showMoveDot);
                 this.$emit('showMoveDot',this.showMoveDot,elLeft,elBottom)
+            },
+            //移出购物车
+            removeOutCart(category_id, item_id, food_id, name, price){
+                if(this.foodNum > 0){
+                    this.REDUCE_CART({shopid: this.shopId, category_id, item_id, food_id, name, price})
+                }
+
             }
+
         }
 
 
