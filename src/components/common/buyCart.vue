@@ -35,7 +35,7 @@
             }
         },
         mounted(){
-            console.log(this.foods)
+//            console.log(this.foods)
         },
         computed:{
             ...mapState([

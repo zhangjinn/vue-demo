@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import App from '../App';
+import {baseUrl, routerMode} from '../config/env'
 Vue.use(Router);
 
 // @ is an alias to /src
@@ -14,8 +15,8 @@ const shop = r =>require.ensure([],()=>r(require('@/views/Shop/Shop')),'Shop');
 
 
 export default new Router({
-  mode: "history",
-  base: process.env.BASE_URL,
+  mode: routerMode,
+  base:baseUrl,
   routes: [
     {
       path: "/",
@@ -38,7 +39,7 @@ export default new Router({
           path: "/goods",
           name: "goods",
           component: goods,
-          meta: { title: '系统首页' ,fActive:0}
+          meta: { title: '系统首页' ,fActive:0, keepAlive: true}
         },
           //搜索页
         {

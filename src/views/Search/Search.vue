@@ -1,20 +1,29 @@
+
 <template>
     <div>
- search
+        <section>
+            搜索
+        </section>
 
+        <foot-guide></foot-guide>
     </div>
 </template>
 
-<script>
+<script type="text/ecmascript-6">
+    import footGuide from '@/components/footer/footGuide.vue'
+    export default{
+        data(){
+            return{
 
+            }
+        },
+        components:{
+            footGuide
+        }
+    }
 </script>
 
-<style scoped>
-    /*通过fixed固定mescroll的高度*/
-    .mescroll {
-        position: fixed;
-        top: 44px;
-        bottom: 0;
-        height: auto;
-    }
+<style lang="less">
+    @import "../../assets/style/mixin";
+
 </style>

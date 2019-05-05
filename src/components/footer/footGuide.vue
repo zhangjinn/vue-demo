@@ -18,7 +18,7 @@
             }
         },
         watch:{/* watch监听路由变化 当路由改变时，运行routeHandle函数*/
-            $route:'routeHandle'
+//            $route:'routeHandle'
         },
         created(){
             this.routeHandle(this.$route)
