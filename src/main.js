@@ -7,12 +7,11 @@ import Cube from 'cube-ui';
 import VueScroller from 'vue-scroller'
 import 'vant/lib/index.css';
 import "./config/rem"
-import { Lazyload } from 'vant';
+import { Lazyload} from 'vant';
 import './assets/style/swiper.min.css'
 import './assets/style/main.less'
 import './assets/font/iconfont.css'
 import http from './service/http'
-
 
 Vue.use(Cube);
 Vue.use(Vant);

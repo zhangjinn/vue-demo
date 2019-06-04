@@ -1,11 +1,15 @@
 <template>
   <div class="v-container">
-    <head-top head-title="商品" goBack="true">
+    <head-top head-title="商品" goBack="false">
       <span slot='lt-logo' class="lt-logo"><van-icon name="search" /></span>
-      <span slot='rg-logo' class="rg-logo" >登陆/注册</span>
+      <span slot='rg-logo' class="rg-logo" >
+        <router-link :to="'/login'" class="head_login">
+          <span class="login_span">登录|注册</span>
+        </router-link>
+      </span>
     </head-top>
-    <div class="page-wrapper">
 
+    <div class="page-wrapper">
       <div class="home-wrapper">
       <cube-sticky :pos="scrollY" fixedShowAni="11">
       <cube-scroll
@@ -159,7 +163,7 @@ import img1 from '@/assets/img/pic1.jpg'
 import img2 from '@/assets/img/pic2.jpg'
 import img3 from '@/assets/img/pic3.jpg'
 import Swiper from 'swiper';
-
+import {getFoodTypes, getRestaurantsInfo} from '../../service/getData.js'
 
 export default {
   name: "goods",
@@ -215,8 +219,8 @@ export default {
   methods: {
     async infoRequest(){
 
-      this.foodTypes=await this.$http.get('/foo/mock/goodsList');
-      let restaurantsInfo=await this.$http.get('/foo/vDemo/restaurants');
+      this.foodTypes=await getFoodTypes();
+      let restaurantsInfo=await getRestaurantsInfo();
       //考虑到本地模拟数据是引用类型，所以返回一个新的数组
       this.restaurants = [...restaurantsInfo.info];
 
@@ -243,7 +247,7 @@ export default {
         this.loaderMoreData();
     },
     async refreshData(){
-        let restaurantsInfo=await this.$http.get('/foo/vDemo/restaurants');
+        let restaurantsInfo=await getRestaurantsInfo();
         this.restaurants = [...restaurantsInfo.info];
         this.$refs.contentScroll.scrollTo(0, this.secondStop, 300);
         this.count=0;
@@ -252,7 +256,7 @@ export default {
     async loaderMoreData(){
         this.count++;
       if( this.count<5){
-        let restaurantsInfo=await this.$http.get('/foo/vDemo/restaurants');
+        let restaurantsInfo=await getRestaurantsInfo();
         this.restaurants = [...this.restaurants, ...restaurantsInfo.info];
       }else{
         const contentScroll = this.$refs.contentScroll;
@@ -293,7 +297,7 @@ export default {
         scrollbar: {
           el: '.swiper-scrollbar'
         },
-        observer:true,//修改swiper自己或子元素时，自动初始化swiper
+        observer:true,//修改swiper自己或子元素时，
         observeParents:true//修改swiper的父元素时，自动初始化swiper
       })
     }

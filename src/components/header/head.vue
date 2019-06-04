@@ -19,7 +19,10 @@
         props:['headTitle','goBack'],
         methods: {
             onClickLeft() {
-                this.$router.go(-1);
+                if(this.goBack == "true"){
+                    this.$router.go(-1);
+                }
+
             },
             onClickRight() {
             }

@@ -112,8 +112,7 @@
             </transition>
             <transition name="fade-choose">
                 <section v-show="changeShowType =='rating'"  class="rating_container" >
-                    <section id="ratingContainer"  ref="ratingList">
-                        <!--<section v-load-more="loaderMoreRating" type="2">-->
+                    <section id="ratingContainer" ref="ratingList">
                         <section>
                             <header class="rating_header">
                                 <section class="rating_header_left">
@@ -194,28 +193,15 @@
     import {mapState, mapMutations} from 'vuex';
     import buyCart from '@/components/common/buyCart';
     import loading from '@/components/common/loading.vue';
-    import { loadMore } from '@/components/common/mixin'
     import BScroll from 'better-scroll';
     import { getRatingList } from '@/service/getData.js'
     import img1 from '@/assets/img/pic1.jpg';
-    const imgs = [
-        {
-            url: 'https://dpubstatic.udache.com/static/dpubimg/7EzIhoEvnG/toutiao_12.JPG'
-        },
-        {
-            url: 'https://dpubstatic.udache.com/static/dpubimg/GR0Piaf5sz/toutiao_21.JPG'
-        },
-        {
-            url: 'https://dpubstatic.udache.com/static/dpubimg/K1JqUN8HSA/toutiao_31.JPG'
-        }
-    ]
     export default{
         data(){
             return{
                 activeKey: 0,
                 showLoading:true, //显示加载动画
                 changeShowType: 'food',//切换显示商品或者评价
-//                changeShowType: 'rating',//切换显示商品或者评价
                 menuList: [], //食品列表
                 menuIndex: 0, //已选菜单索引值，默认为0
                 menuIndexChange: true,//解决选中index时，scroll监听事件重复判断设置index的bug
@@ -233,16 +219,6 @@
                 totalPrice: 0, //总共价格
                 shopId:1,
                 cartFoodList:[],//购物车商品列表
-                options: {
-                    pullUpLoad: {
-                        threshold: 60,
-                        txt: {
-                            more:'Load more',
-                            noMore: 'No more data'
-                        }
-                    }
-                },
-                content:imgs.slice(),
                 images: [
                     {src: img1}
                 ]
@@ -257,7 +233,6 @@
             this.windowHeight=window.innerHeight;
 
         },
-        mixins: [ loadMore ],
         components:{
             loading,
             buyCart
@@ -267,6 +242,7 @@
             showLoading:function(value){
                 if(!value){
                     this.$nextTick(()=>{
+
                         this.executeWork();
                 })
                 }
@@ -274,7 +250,6 @@
             //切换到评论状态
             changeShowType:function(value){
                 if(value==="rating"){
-                    var that = this;
                     this.$nextTick(()=>{
                         this.ratingScroll=new BScroll(this.$refs.ratingList,{
                         probeType: 3,
@@ -284,13 +259,13 @@
                         click: true
                     });
                     this.ratingScroll.on('scroll',(pos)=>{
-                            if (Math.abs(Math.round(pos.y)) >=  Math.abs(Math.round(this.ratingScroll.maxScrollY))){
-                            this.loaderMoreRating();
-                            this.ratingScroll.refresh();
-                             }
-                        })
+                        if (Math.abs(Math.round(pos.y)) >=  Math.abs(Math.round(this.ratingScroll.maxScrollY))){
+                        this.loaderMoreRating();
+                        this.ratingScroll.refresh();
+                    }
+                })
 
-                    })
+                })
                 }
             }
 
@@ -312,7 +287,6 @@
         console.log(this.ratingList)
         this.hideLoading();
     },
-
     //加载更多评论
     async loaderMoreRating(){
         if (this.preventRepeatRequest) {
@@ -325,10 +299,7 @@
         ratingDate= [...ratingDate.info] ;
         this.ratingList = [...this.ratingList,...ratingDate]; //展开运算符结合数组
         this.loadRatings = false;
-                if (ratingDate.length >= 10) {
-                    this.preventRepeatRequest = false;
-                }
-//        this.preventRepeatRequest = false;
+        this.preventRepeatRequest = false;
 
     },
     showDialog() {
@@ -364,7 +335,9 @@
     executeWork(){
         this.$nextTick(() => {
             this.getFoodListHeight();
-       })
+
+        console.log(this.menuList)
+    })
     },
 
     //获取食品列表的高度，存入shopListTop
@@ -506,9 +479,7 @@
         75%  { transform: scale(.9) }
         100% { transform: scale(1) }
     }
-    .imgs-item img{
-        width: 100%;
-    }
+
     .shop_container{
         display: -ms-flexbox;
         display: flex;
@@ -865,7 +836,6 @@
         overflow-y: hidden;
     #ratingContainer{
         flex: 1;
-        height:100%;
     .rating_header{
         display: flex;
         background-color: #fff;

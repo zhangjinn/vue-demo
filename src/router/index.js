@@ -12,6 +12,8 @@ const search = r =>require.ensure([],()=>r(require('@/views/Search/Search')),'Se
 const profile = r =>require.ensure([],()=>r(require('@/views/Profile/Profile')),'Profile');
 const about = r =>require.ensure([],()=>r(require('@/views/About')),'About');
 const shop = r =>require.ensure([],()=>r(require('@/views/Shop/Shop')),'Shop');
+const login = r =>require.ensure([],()=>r(require('@/views/Login/Login')),'Login');
+const forget = r =>require.ensure([],()=>r(require('@/views/Forget/Forget')),'Forget');
 
 
 export default new Router({
@@ -68,8 +70,19 @@ export default new Router({
           name: "shop",
           component: shop,
           meta: { title: '商铺详情页'}
-        }
-
+        },
+        //登录注册页
+        {
+          path: '/login',
+          name: "login",
+          component: login
+        },
+        //修改密码页
+        {
+          path: '/forget',
+          name: "forget",
+          component: forget
+        },
 
       ]
     },
