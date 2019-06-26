@@ -6,7 +6,8 @@ import {
     ADD_CART,
     REDUCE_CART,
     INIT_BUYCART,
-    CLEAR_CART
+    CLEAR_CART,
+    SAVE_QUESTION
 } from './mutation-types'
 
 import {setStore, getStore} from '@/config/mUtils.js'
@@ -67,6 +68,10 @@ export default{
         state.cartList={};
         state.cartList={...state.cartList};
         setStore('buyCart', state.cartList);
+    },
+    //保存所有问题标题和详情
+    [SAVE_QUESTION](state, question){
+        state.question = {...question}
     }
 
 }

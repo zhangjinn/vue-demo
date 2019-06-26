@@ -12,6 +12,7 @@
     "better-scroll": "^0.1.15",
     "cube-ui": "~1.12.1",
     "mescroll.js": "^1.4.1",
+    "showdown": "^1.9.0",
     "vant": "^1.4.8",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",

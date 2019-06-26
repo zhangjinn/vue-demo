@@ -39,7 +39,6 @@
               </div>
             </cube-sticky-ele>
 
-
             <div class="swiper-list-container">
               <div class="swiper-container" v-if="foodTypes.length">
                 <div class="swiper-wrapper">
@@ -307,18 +306,6 @@ export default {
 <style lang="less" scoped>
   @import "../../assets/style/mixin";
 
-  .page-wrapper{
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    right: 0;
-    left: 0;
-    height: 100%;
-    transform: rotate(0deg);
-    overflow: hidden;
-    .home-wrapper{
-      height: 100%;
-      padding:46px 0 50px 0;
       .main-container{
         .selected-position{
           padding: 10px 15px 0;
@@ -461,9 +448,6 @@ export default {
 
       .search-wrapper{
         .linear-gradient(90deg,#0af,#0085ff);
-          /*position: sticky;*/
-          /*top: 46px;*/
-          /*z-index: 999;*/
         .search-button{
           display: flex;
           padding: 10px;
@@ -480,9 +464,6 @@ export default {
         }
       }
     .filter-shop{
-      /*position: sticky;*/
-      /*top: 101px;*/
-      /*z-index: 1;*/
       .filter-shop-container{
         background: #fff;
         display: flex;
@@ -551,7 +532,5 @@ export default {
           width: 100%
         }
       }
-    }
 
-  }
 </style>

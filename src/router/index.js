@@ -14,6 +14,8 @@ const about = r =>require.ensure([],()=>r(require('@/views/About')),'About');
 const shop = r =>require.ensure([],()=>r(require('@/views/Shop/Shop')),'Shop');
 const login = r =>require.ensure([],()=>r(require('@/views/Login/Login')),'Login');
 const forget = r =>require.ensure([],()=>r(require('@/views/Forget/Forget')),'Forget');
+const serve = r =>require.ensure([],()=>r(require('@/views/Serve/Serve')),'Serve');
+const questionDetail = r =>require.ensure([],()=>r(require('@/views/Serve/Children/QuestionDetail')),'QuestionDetail');
 
 
 export default new Router({
@@ -29,7 +31,6 @@ export default new Router({
           path: '',
           redirect: '/HelloWorld'
         },
-
         {
           path: "/HelloWorld",
           name: "HelloWorld",
@@ -82,6 +83,16 @@ export default new Router({
           path: '/forget',
           name: "forget",
           component: forget
+        },
+        //服务中心
+        {
+          path: '/serve',
+          component: serve,
+          children:[{
+            path: 'questionDetail',  //订单详情页
+            name: "questionDetail",
+            component: questionDetail,
+          }]
         },
 
       ]

@@ -411,8 +411,8 @@
             const el = menuList[0];
             this.scroll.scrollToElement(el, 800, 0, -(wrapMenuHeight/2 - 50));
 
-        }
-    })
+            }
+        })
     })
     },
     /*

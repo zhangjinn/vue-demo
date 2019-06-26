@@ -8,7 +8,8 @@ Vue.use(Vuex);
 
 const state={
   footerActive:0, //footer跳转索引
-  cartList: {} // 加入购物车的商品列表
+  cartList: {}, // 加入购物车的商品列表
+  question:null, //问题详情
 };
 export default new Vuex.Store({
   state,

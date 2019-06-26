@@ -194,7 +194,7 @@
     import buyCart from '@/components/common/buyCart';
     import loading from '@/components/common/loading.vue';
     import BScroll from 'better-scroll';
-    import { getRatingList } from '@/service/getData.js'
+    import { getRatingList } from '@/Serve/getData.js'
     import img1 from '@/assets/img/pic1.jpg';
     export default{
         data(){

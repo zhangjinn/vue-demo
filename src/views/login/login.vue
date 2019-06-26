@@ -222,44 +222,31 @@
 </script>
 <style scoped lang="less">
     @import "../../assets/style/mixin";
-    .page-wrapper{
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        right: 0;
-        left: 0;
-        height: 100%;
-        transform: rotate(0deg);
-        overflow: hidden;
-        .home-wrapper {
-            height: 100%;
-            padding: 56px 0 50px 0;
-            .van-cell {
-               text-align: left;
-                height:60px;
-                align-items: center;
-                .Verification{
-                    display: flex;
-                    align-items: center;
-                    .verificationChange{
-                        width: 60px;
-                        p:nth-child(2){
-                            color:#3b95e9;
-                        }
-                    }
+
+    .van-cell {
+       text-align: left;
+        height:60px;
+        align-items: center;
+        .Verification{
+            display: flex;
+            align-items: center;
+            .verificationChange{
+                width: 60px;
+                p:nth-child(2){
+                    color:#3b95e9;
                 }
             }
-            .login_container{
-                margin: 1rem .5rem 1rem;
-                font-size: 16px;
-                color: #fff;
-                background-color: #4cd964;
-                padding: 1rem 0;
-                border: 1px;
-                border-radius: 0.15rem;
-                text-align: center;
-            }
         }
+    }
+    .login_container{
+        margin: 1rem .5rem 1rem;
+        font-size: 16px;
+        color: #fff;
+        background-color: #4cd964;
+        padding: 1rem 0;
+        border: 1px;
+        border-radius: 0.15rem;
+        text-align: center;
     }
     .van-dialog{
         text-align: center;
